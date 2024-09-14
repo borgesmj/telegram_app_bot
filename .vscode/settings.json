@@ -1,5 +1,6 @@
 {
     "files.autoSave": "off",
     "editor.wordWrap": "on",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "terminal.integrated.copyOnSelection": true
 }
