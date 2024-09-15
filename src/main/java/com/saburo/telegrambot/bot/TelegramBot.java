@@ -7,19 +7,25 @@ import com.saburo.telegrambot.config.EnvConfig;
 
 public class TelegramBot extends TelegramLongPollingBot {
     @Override
-    public String getBotUsername(){
+    public String getBotUsername() {
         return EnvConfig.get("TELEGRAM_BOT_USERNAME");
     }
-    
+
     @Override
-    public String getBotToken(){
+    public String getBotToken() {
         return EnvConfig.get("TELEGRAM_BOT_TOKEN");
     }
-    
+
     @Override
-    public void onUpdateReceived(Update update){
+    public void onUpdateReceived(Update update) {
         MessageListener messageListener = new MessageListener();
         var message = messageListener.handlMessage(update);
-        System.out.println(message.getText());
+        if (message.getText().startsWith("/")) {
+            CommandHandler commandHandler = new CommandHandler(message.getText());
+            commandHandler.handleCommand();
+        } else {
+            MessageHandler messageHandler = new MessageHandler(message.getText());
+            messageHandler.handleMessage();
+        }
     }
 }
