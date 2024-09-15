@@ -10,14 +10,16 @@ public class TelegramBot extends TelegramLongPollingBot {
     public String getBotUsername(){
         return EnvConfig.get("TELEGRAM_BOT_USERNAME");
     }
-
+    
     @Override
     public String getBotToken(){
         return EnvConfig.get("TELEGRAM_BOT_TOKEN");
     }
-
+    
     @Override
     public void onUpdateReceived(Update update){
-        System.out.println(update.getMessage().getText());
+        MessageListener messageListener = new MessageListener();
+        var message = messageListener.handlMessage(update);
+        System.out.println(message.getText());
     }
 }
