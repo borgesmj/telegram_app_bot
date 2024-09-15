@@ -25,6 +25,34 @@ public class CreateTablesCommands {
         }
     }
 
+    // Crear tablas
+    public void createTablesCommand(){
+        String createTablesString = """
+            CREATE TABLE IF NOT EXISTS USERS (
+            ID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            USERNAME VARCHAR(50) DEFAULT NULL,
+            CREATED_AT timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            IS_PREMIUM BOOLEAN NOT NULL DEFAULT FALSE,
+            EMAIL VARCHAR(50),
+            HASHED_PWD VARCHAR(200),
+            HASHED_SCTY_AWD VARCHAR(200),
+            SALT_SCTY_SWR VARCHAR(50),
+            PASSWORD_EXPIRY_DATE timestamp,
+            TELEGRAM_ID INT NOT NULL,
+            ROLE ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+            LAST_LOGIN TIMESTAMP NOT NULL,
+            UNIQUE (TELEGRAM_ID)  
+            );
+        """;
+        try(PreparedStatement createTablesStmt = connection.prepareStatement(createTablesString)){
+            createTablesStmt.executeUpdate();
+            System.out.println("Tablas creadas correctamente");
+        } catch (SQLException e) {
+            System.out.println("Error al crear las tablas");
+            System.out.println(e);
+        }
+    }
+
 
     
 }

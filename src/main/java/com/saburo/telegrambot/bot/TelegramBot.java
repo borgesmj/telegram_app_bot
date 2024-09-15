@@ -20,6 +20,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         // CRea las tablas de la base de datos
         CreateTablesCommands createTablesCommands = new CreateTablesCommands(connection);
         createTablesCommands.setTimeZone();
+        createTablesCommands.createTablesCommand();
     }
 
     @Override
