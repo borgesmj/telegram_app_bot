@@ -1,15 +1,20 @@
 package com.saburo.telegrambot.bot;
+
+import org.telegram.telegrambots.meta.api.objects.Message;
+
 /**
  * Clase que recibe un mensaje de @link TelegramBot si no es un comando con /
- * @param newMessage Mensaje recibido
+ * @param newMessage Mensaje recibido en objeto Message
  */
 public class MessageHandler {
-    private String newMessage;
-    public MessageHandler(String newMessage){
+    private Message newMessage;
+    private MessageSender messageSender;
+    public MessageHandler(Message newMessage, MessageSender messageSender){
         this.newMessage = newMessage;
+        this.messageSender = messageSender;
     }
 
     public void handleMessage(){
-        System.out.println("mensaje sin comando: "+ newMessage);
+        messageSender.sendMessage(newMessage, "*texto sin comando*");
     }
 }
