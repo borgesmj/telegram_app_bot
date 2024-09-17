@@ -5,7 +5,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import com.saburo.telegrambot.config.EnvConfig;
 import com.saburo.telegrambot.database.CreateTablesCommands;
+import com.saburo.telegrambot.database.DatabaseCommands;
 import com.saburo.telegrambot.database.DatabaseConnection;
+import com.saburo.telegrambot.user.UserStatus;
 
 import java.sql.Connection;
 
@@ -24,6 +26,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final Connection connection;
     // Instancia de MessageSender para enviar mensajes de respuesta
     private final MessageSender messageSender;
+    // instancia de DatabaseCommands
+    private final DatabaseCommands databaseCommands;
+    // Instancia de UserStatus
+    private final UserStatus userStatus;
 
     /**
      * Constructor de la clase TelegramBot.
@@ -39,6 +45,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         createTablesCommands.createTablesCommand();
         // Inicializa el MessageSender con la instancia actual del bot
         messageSender = new MessageSender(this);
+        // Iniciliza databaseCommands enviando la conexión a la base de datos
+        databaseCommands = new DatabaseCommands(connection);
+        // Iniciliza userStatus
+        userStatus = new UserStatus();
     }
 
     /**
@@ -76,11 +86,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (message.hasText()){
             // Si el texto del mensaje comienza con "/", se considera un comando
             if (message.getText().startsWith("/")) {
-                CommandHandler commandHandler = new CommandHandler(message, messageSender);
+                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus);
                 commandHandler.handleCommand();
             } else {
                 // Si el texto del mensaje no comienza con "/", se considera un mensaje normal
-                MessageHandler messageHandler = new MessageHandler(message, messageSender);
+                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus);
                 messageHandler.handleMessage();
             }
         } else{

@@ -29,8 +29,9 @@ public class CreateTablesCommands {
     public void createTablesCommand(){
         String createTablesString = """
             CREATE TABLE IF NOT EXISTS USERS (
-            ID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            USERNAME VARCHAR(50) DEFAULT NULL,
+            ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            TELEGRAM_ID BIGINT NOT NULL,
+            USERNAME VARCHAR(50) UNIQUE,
             CREATED_AT timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
             IS_PREMIUM BOOLEAN NOT NULL DEFAULT FALSE,
             EMAIL VARCHAR(50),
@@ -38,7 +39,6 @@ public class CreateTablesCommands {
             HASHED_SCTY_AWD VARCHAR(200),
             SALT_SCTY_SWR VARCHAR(50),
             PASSWORD_EXPIRY_DATE timestamp,
-            TELEGRAM_ID INT NOT NULL,
             ROLE ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
             LAST_LOGIN TIMESTAMP NOT NULL,
             UNIQUE (TELEGRAM_ID)  
