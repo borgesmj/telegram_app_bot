@@ -95,6 +95,11 @@ public class CommandHandler {
                 userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "INGRESO");
                 userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), true);
             break;
+            case "/nuevoegreso":
+                messageSender.sendMessage(newMessage, "nuevo Egreso. ingresa el monto");
+                userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "EGRESO");
+                userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), true);
+            break;
             default:
             if (userStatus.getIsWaitingForCategory(newMessage.getFrom().getId())){
                 userProfile.setCategory(newMessage.getText().replace("/", "").trim().toUpperCase());
