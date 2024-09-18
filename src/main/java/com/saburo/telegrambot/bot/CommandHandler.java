@@ -68,6 +68,9 @@ public class CommandHandler {
                         userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), true);
                     }
                 } else {
+                    username = databaseCommands.getCurrentUsername(newMessage.getFrom().getId());
+                    userProfile.setUsername(username);
+                    databaseCommands.updateLastLogin(newMessage.getFrom().getId());
                     messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_7(username));
                 }
                 break;

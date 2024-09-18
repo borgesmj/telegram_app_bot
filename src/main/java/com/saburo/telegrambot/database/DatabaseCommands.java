@@ -64,4 +64,30 @@ public class DatabaseCommands {
         }
         return "";
     }
+
+    public String getCurrentUsername(long userId){
+        String SqlQueryString = "SELECT USERNAME FROM USERS WHERE TELEGRAM_ID = ?";
+        try (PreparedStatement getCurrentUsernameStmt = connection.prepareStatement(SqlQueryString)) {
+            getCurrentUsernameStmt.setLong(1, userId);
+            ResultSet rs = getCurrentUsernameStmt.executeQuery();
+            rs.next();
+            return rs.getString("USERNAME");
+        } catch (Exception e) {
+            System.out.println("Error al obtener el nombre de usuario");
+            System.out.println(e);
+        }
+        return "";
+    }
+
+    public void updateLastLogin(long userId){
+        String SqlQueryString = "UPDATE USERS SET LAST_LOGIN = ? WHERE TELEGRAM_ID = ?";
+        try (PreparedStatement updateLastLoginStmt = connection.prepareStatement(SqlQueryString)){
+            updateLastLoginStmt.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+            updateLastLoginStmt.setLong(2, userId);
+            updateLastLoginStmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error al actualizar el ultimo login");
+            System.out.println(e);
+        }
+    }
 }
