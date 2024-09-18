@@ -38,12 +38,23 @@ public class CommandHandler {
  * @param newMessage       Mensaje recibido como un objeto {@link Message}.
  * @param messageSender    Instancia de {@link MessageSender} para enviar respuestas al usuario.
  * @param databaseCommands Instancia de {@link DatabaseCommands} para interactuar con la base de datos.
+ * @param userStatus       Instancia de {@link UserStatus} para mantener el estado del usuario.
+ * @param userProfile      Instancia de {@link UserProfile} para almacenar información del usuario.
  */
     public void handleCommand() {
         // Obtiene el texto del mensaje para determinar qué comando ejecutar.
         switch (newMessage.getText()) {
             case "/menu":
                 messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+                userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
+                userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "");
             break;
             case "/start":
              /**
@@ -90,17 +101,39 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, USER_MSG_4);
                 userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), true);
             break;
+            /* 
+             * nuevo ingreso: el usuario indica que quiere hacer un nuevo ingreso
+             * Coloca en true el estado de isWaitingForNewAmmount en @link UserStatus
+             * Coloca en INGRESO el tipo de movimiento en @link UserStatus
+             * Se evalua el estado en @link MessageSender para enviar el mensaje correspondiente
+             * 
+             */
             case "/nuevoingreso":
-                messageSender.sendMessage(newMessage, "nuevo ingreso. ingresa el monto");
+                messageSender.sendMessage(newMessage, USER_MSG_13);
                 userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "INGRESO");
                 userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), true);
             break;
+            /* 
+             * nuevo engreso: el usuario indica que quiere hacer un nuevo egreso
+             * Coloca en true el estado de isWaitingForNewAmmount en @link UserStatus
+             * Coloca en INGRESO el tipo de movimiento en @link UserStatus
+             * Se evalua el estado en @link MessageSender para enviar el mensaje correspondiente
+             * 
+             */
             case "/nuevoegreso":
-                messageSender.sendMessage(newMessage, "nuevo Egreso. ingresa el monto");
+                messageSender.sendMessage(newMessage, USER_MSG_14);
                 userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "EGRESO");
                 userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), true);
             break;
+            case "/nuevoahorro":
+                userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "AHORROS");
+                userStatus.setIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId(), true);
+                messageSender.sendMessage(newMessage, "Ingresa el monto del ahorro");
+            break;
             default:
+            /**
+             * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
+             */
             if (userStatus.getIsWaitingForCategory(newMessage.getFrom().getId())){
                 userProfile.setCategory(newMessage.getText().replace("/", "").trim().toUpperCase());
                 databaseCommands.saveNewMovement(
@@ -110,10 +143,11 @@ public class CommandHandler {
                     userProfile.getCategory(),
                     userStatus.getTypeOfMovement(newMessage.getFrom().getId())
                 );
-                messageSender.sendMessage(newMessage, "movimiento guardado");
+                messageSender.sendMessage(newMessage, USER_MSG_18);
                 userStatus.setIsWaitingForCategory(newMessage.getFrom().getId(), false);
                 userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
                 userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
+                messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
             }
                 break;
         }

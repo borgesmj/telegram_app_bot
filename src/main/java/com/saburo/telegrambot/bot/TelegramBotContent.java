@@ -1,5 +1,7 @@
 package com.saburo.telegrambot.bot;
 
+import java.util.List;
+
 /***
  * TelegramBotContent tiene los mensajes que se enviarán al usuario
  * Algunos son mensajes estaticos otros son metodos que retornan un String
@@ -14,7 +16,9 @@ public class TelegramBotContent {
         public static final String MENU_PRINCIPAL = """
                         *MENU PRINCIPAL*
 
-                        1. /nuevoingreso
+                        1. /nuevoingreso - *Nuevo Ingreso*
+                        2. /nuevoegreso - *Nuevo Egreso*
+                        3. /nuevoahorro - *Nuevo Ahorro*
                         """;
         /**
          * Mensaje de bienvenida al usuario nuevo
@@ -118,7 +122,7 @@ public class TelegramBotContent {
 
                         """;
         public static final String USER_MSG_10 = """
-                        
+
                         🤖:
 
                         ✅ Excelente. Tus ahorros fueron guardados
@@ -143,11 +147,65 @@ public class TelegramBotContent {
 
                         Por ejemplo: comida, entretenimiento, renta, otros etc.
                         """;
-        public static final String USER_MSG_12 ="""
+        public static final String USER_MSG_12 = """
+                        🤖:
+
                         🎉 GENIAL!!!
 
                         Tu perfil fue guardado exitosamente, ahora puedes empezar a registrar tus movimientos.
 
                         Puedes realizarlo desde el /menu principal
+                        """;
+        public static final String USER_MSG_13 = """
+                        🤖:
+
+                        *GUARDEMOS UN NUEVO INGRESO*
+
+                        `Ingresa el monto`
+
+                        Escribe en un mensaje, sin comas ni punto
+
+                        Si quieres cancelar, haz click en /menu
+
+                        """;
+        public static final String USER_MSG_14 = """
+                        🤖:
+
+                        *GUARDEMOS UN NUEVO EGRESO*
+
+                        `Ingresa el monto`
+
+                        Escribe en un mensaje, sin comas ni punto
+
+                        Si quieres cancelar, haz click en /menu
+
+                        """;
+        public static final String USER_MSG_15 = """
+                        🤖:
+
+                        Escribe en un texto, el `nombre de la transaccion`.
+
+                        Si quieres cancelar, haz click en /menu
+                        """;
+
+        public static String USER_MSG_16(List<String> categorias) {
+                String message = "🤖:\n\n";
+                message += "ℹ️ Selecciona la categoria\n\n";
+                for (String category : categorias) {
+                        message += "/" + category + "\n";
+                }
+                message += "\nPara cancelar, haz click en /menu";
+                return message; // mensaje a enviar
+        }
+
+        public static final String USER_MSG_17 = """
+                        🤖:
+
+                        No tienes categorias guardadas. Guarda tu primera categoria en /nuevacategoria
+                        """;
+        public static final String USER_MSG_18= """
+                        🤖:
+
+                        Movimiento guardado con exito!!!
                         """;
 }

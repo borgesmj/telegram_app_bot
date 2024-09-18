@@ -7,6 +7,8 @@ import com.saburo.telegrambot.user.UserProfile;
 import com.saburo.telegrambot.user.UserStatus;
 import static com.saburo.telegrambot.bot.TelegramBotContent.*;
 
+import java.util.Arrays;
+
 /**
  * Clase que recibe un mensaje de @link TelegramBot si no es un comando con /
  * @param newMessage       Mensaje recibido en objeto Message
@@ -81,16 +83,41 @@ public class MessageHandler {
                 userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
                 messageSender.sendMessage(newMessage, USER_MSG_12);
             }
+            /*
+             * Esta seccion evalua los estados del usuario para la entrada de informacion
+             * isWaitingForNewAmmount @link UserStatus espera el monto de la transaccion
+             * isWaitingForDetails @link UserStatus espera que el usuario ingrese los detalles de la transaccion
+             * isWaitingForCategory @link UserStatus espera que el usuario ingrese la categoria de la transaccion
+             * formateadas en una lista con /, lo cual trata de comando y lo procesará por medio de @link CommandHandler
+             */
         } else if (userStatus.getIsWaitingForNewAmmount(newMessage.getFrom().getId())){
             userProfile.setAmmount(newMessage.getText());
-            messageSender.sendMessage(newMessage, "ahora dame los detalles de la transaccion");
+            messageSender.sendMessage(newMessage, USER_MSG_15);
             userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
             userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), true);
+            /**
+             *isWaitingForDetails @link UserStatus espera que el usuario ingrese los detalles de la transaccion
+             */
         }   else if(userStatus.getIsWaitingForDetails(newMessage.getFrom().getId())){
             userProfile.setMovementDetails(newMessage.getText());
             userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
             messageSender.sendMessage(newMessage, "Elige la categoria");
+            String[] categorias = databaseCommands.getCategories(newMessage.getFrom().getId(), userStatus.getTypeOfMovement(newMessage.getFrom().getId())).toArray(new String[0]);
+            if(categorias.length > 0){
+                messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_16(Arrays.asList(categorias)));
+            } else{
+                messageSender.sendMessage(newMessage, USER_MSG_17);
+            }
             userStatus.setIsWaitingForCategory(newMessage.getFrom().getId(), true);
+        } else if (userStatus.getIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId())){
+            userProfile.setAmmount(newMessage.getText());
+            databaseCommands.saveNewSavings(
+                newMessage.getFrom().getId(), 
+                userProfile.getAmmount(), 
+                userStatus.getTypeOfMovement(newMessage.getFrom().getId()));
+            userStatus.setIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId(), false);
+            messageSender.sendMessage(newMessage, "nuevo ahorro guardado");
+            messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
         }
     }
 }
