@@ -20,7 +20,9 @@ public class UserStatus {
     private final Map<Long, Boolean> isWaitingForInitialSavings;
     private final Map<Long, Boolean> isWaitingForCategories;
     private final Map<Long, String> typeOfMovement;
-
+    private final Map<Long, Boolean> isWaitingForNewAmmount; 
+    private final Map<Long, Boolean> isWaitingForDetails;
+    private final Map<Long, Boolean> isWaitingForCategory;
     /**
      * Constructor de la clase UserStatus.
      * Inicializa los Maps como un {@link HashMap}.
@@ -31,6 +33,9 @@ public class UserStatus {
         this.isWaitingForInitialSavings = new HashMap<>();
         this.isWaitingForCategories = new HashMap<>();
         this.typeOfMovement = new HashMap<>();
+        this.isWaitingForNewAmmount = new HashMap<>();
+        this.isWaitingForDetails = new HashMap<>();
+        this.isWaitingForCategory = new HashMap<>();
     }
     // Getters
     public boolean getIsWaitingForNewUsername(long userId) {
@@ -53,7 +58,17 @@ public class UserStatus {
         return typeOfMovement.getOrDefault(userId, "");
     }
 
+    public boolean getIsWaitingForNewAmmount(long userId){
+        return isWaitingForNewAmmount.getOrDefault(userId, false);
+    }
 
+    public boolean getIsWaitingForDetails(long userId){
+        return isWaitingForDetails.getOrDefault(userId, false);
+    }
+
+    public boolean getIsWaitingForCategory(long userId){
+        return isWaitingForCategory.getOrDefault(userId, false);
+    }
     // setters
     public void setIsWaitingForNewUsername(long userId, boolean status) {
         isWaitingForNewUsername.put(userId, status);
@@ -73,5 +88,16 @@ public class UserStatus {
 
     public void setTypeOfMovement(long userId, String type){
         typeOfMovement.put(userId, type);
+    }
+    public void setIsWaitingForNewAmmount(long userId, boolean status){
+        isWaitingForNewAmmount.put(userId, status);
+    }
+
+    public void setIsWaitingForDetails(long userId, boolean status){
+        isWaitingForDetails.put(userId, status);
+    }
+
+    public void setIsWaitingForCategory(long userId, boolean status){
+        isWaitingForCategory.put(userId, status);
     }
 }

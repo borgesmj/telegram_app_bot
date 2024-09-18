@@ -156,4 +156,43 @@ public class DatabaseCommands {
             System.out.println(e);
         }
     }
+
+    public int getCAtegoryId(String category) {
+        String getUserIdStatement = "SELECT ID FROM CATEGORIAS WHERE NOMBRE = ?";
+        int categoryId = -1; // Inicializamos userId con un valor por defecto
+
+        try (PreparedStatement userIdStmt = connection.prepareStatement(getUserIdStatement)) {
+            userIdStmt.setString(1, category);; // Asegúrate de que USERNAME sea una variable válida
+            ResultSet rs = userIdStmt.executeQuery();
+
+            // Verificamos si hay un resultado antes de llamar a rs.getInt
+            if (rs.next()) {
+                categoryId = rs.getInt(1); // Asigna el valor de ID a userId
+            } else {
+                System.out.println("No se encontró un usuario con ese nombre.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al obtener el ID del usuario: " + e.getMessage());
+        }
+        return categoryId;
+    }
+
+    public void saveNewMovement(long userId, double amount, String details, String category, String typeOfMovement){
+        int currentUserId = getCurrentUserId(userId);
+        int categoryId = getCAtegoryId(category);
+        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, USER_ID, CATEGORIA_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement saveNewMovementStmt = connection.prepareStatement(SqlQueryString)){
+            saveNewMovementStmt.setString(1, details);
+            saveNewMovementStmt.setDouble(2, amount);
+            saveNewMovementStmt.setInt(3, currentUserId);
+            saveNewMovementStmt.setInt(4, categoryId);
+            saveNewMovementStmt.setString(5, typeOfMovement);
+            saveNewMovementStmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error al ingresar nuevo movimiento");
+            System.out.println(e);
+        }
+
+    }
 }

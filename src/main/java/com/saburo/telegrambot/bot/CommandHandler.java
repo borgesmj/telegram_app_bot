@@ -42,6 +42,9 @@ public class CommandHandler {
     public void handleCommand() {
         // Obtiene el texto del mensaje para determinar qué comando ejecutar.
         switch (newMessage.getText()) {
+            case "/menu":
+                messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+            break;
             case "/start":
              /**
              * Comando /start:
@@ -87,7 +90,26 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, USER_MSG_4);
                 userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), true);
             break;
+            case "/nuevoingreso":
+                messageSender.sendMessage(newMessage, "nuevo ingreso. ingresa el monto");
+                userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "INGRESO");
+                userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), true);
+            break;
             default:
+            if (userStatus.getIsWaitingForCategory(newMessage.getFrom().getId())){
+                userProfile.setCategory(newMessage.getText().replace("/", "").trim().toUpperCase());
+                databaseCommands.saveNewMovement(
+                    newMessage.getFrom().getId(),
+                    userProfile.getAmmount(),
+                    userProfile.getMovementDetails(),
+                    userProfile.getCategory(),
+                    userStatus.getTypeOfMovement(newMessage.getFrom().getId())
+                );
+                messageSender.sendMessage(newMessage, "movimiento guardado");
+                userStatus.setIsWaitingForCategory(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
+            }
                 break;
         }
     }

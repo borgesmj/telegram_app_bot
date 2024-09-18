@@ -6,6 +6,16 @@ package com.saburo.telegrambot.bot;
  * 
  */
 public class TelegramBotContent {
+
+        /**
+         * Menu principal
+         * 
+         */
+        public static final String MENU_PRINCIPAL = """
+                        *MENU PRINCIPAL*
+
+                        1. /nuevoingreso
+                        """;
         /**
          * Mensaje de bienvenida al usuario nuevo
          */
@@ -132,5 +142,12 @@ public class TelegramBotContent {
                         Igual que en el paso anterior, escribe en un mismo mensaje todas separadas por una coma.
 
                         Por ejemplo: comida, entretenimiento, renta, otros etc.
+                        """;
+        public static final String USER_MSG_12 ="""
+                        🎉 GENIAL!!!
+
+                        Tu perfil fue guardado exitosamente, ahora puedes empezar a registrar tus movimientos.
+
+                        Puedes realizarlo desde el /menu principal
                         """;
 }

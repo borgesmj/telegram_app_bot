@@ -79,8 +79,18 @@ public class MessageHandler {
                     databaseCommands.saveCategories(newMessage.getFrom().getId(), category.trim().toUpperCase(), userStatus.getTypeOfMovement(newMessage.getFrom().getId()));
                 }
                 userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
-                messageSender.sendMessage(newMessage, "configurado correctamente");
+                messageSender.sendMessage(newMessage, USER_MSG_12);
             }
+        } else if (userStatus.getIsWaitingForNewAmmount(newMessage.getFrom().getId())){
+            userProfile.setAmmount(newMessage.getText());
+            messageSender.sendMessage(newMessage, "ahora dame los detalles de la transaccion");
+            userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
+            userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), true);
+        }   else if(userStatus.getIsWaitingForDetails(newMessage.getFrom().getId())){
+            userProfile.setMovementDetails(newMessage.getText());
+            userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
+            messageSender.sendMessage(newMessage, "Elige la categoria");
+            userStatus.setIsWaitingForCategory(newMessage.getFrom().getId(), true);
         }
     }
 }

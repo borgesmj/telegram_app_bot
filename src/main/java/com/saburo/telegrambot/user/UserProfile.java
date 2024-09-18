@@ -13,6 +13,10 @@ public class UserProfile {
     private String username;
     // Metodo para cambiar los montos instroducidos por el usuario a numero
     private double doubleAmmount;
+    // Detalles de cada movimientos
+    private String movementDetails;
+    // Categoria del movimiento
+    private String category;
     /**
      * Estos parametros de abajo son para usarlos en un futuro
      */
@@ -37,6 +41,8 @@ public class UserProfile {
         this.telegramUserID = 0;
         this.username = "";
         this.doubleAmmount = 0;
+        this.movementDetails = "";
+        this.category = "";
         /**
          * 
          * this.is_premium = false; // Valor predeterminado: el usuario no es premium
@@ -72,6 +78,14 @@ public class UserProfile {
         return doubleAmmount;
     }
 
+    public String getMovementDetails(){
+        return movementDetails;
+    }
+
+    public String getCategory(){
+        return category;
+    }
+
     // Setters
     public void setUsername(String username) {
         this.username = username;
@@ -83,6 +97,14 @@ public class UserProfile {
         } catch (NumberFormatException e) {
             System.out.println("Error al convertir el texto a double");
         }
+    }
+
+    public void setMovementDetails(String userText){
+        movementDetails = userText;
+    }
+
+    public void setCategory(String userText){
+        category = userText;
     }
 
 
