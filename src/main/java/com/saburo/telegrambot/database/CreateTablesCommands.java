@@ -55,22 +55,11 @@ public class CreateTablesCommands {
                     CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     USER_ID INT NOT NULL,
                     CATEGORIA_ID INT,
-                    TIPO_MOVIMIENTO ENUM('INGRESO', 'EGRESO'),
+                    TIPO_MOVIMIENTO ENUM('INGRESO', 'EGRESO', 'AHORROS'),
                     FOREIGN KEY (USER_ID) REFERENCES USERS(ID),
                     FOREIGN KEY (CATEGORIA_ID) REFERENCES CATEGORIAS(ID)
                     );
                 """;
-        // Crear la tabla de ahorros
-        String createAhorrosTable = """
-                    CREATE TABLE IF NOT EXISTS AHORROS (
-                    ID INT AUTO_INCREMENT PRIMARY KEY,
-                    MONTO DOUBLE NOT NULL,
-                    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    USER_ID INT NOT NULL,
-                    FOREIGN KEY (USER_ID) REFERENCES USERS(ID)
-                    );
-                """;
-
         // Crear la tabla CATEGORIAS
         String createCategoriasTable = """
                     CREATE TABLE IF NOT EXISTS CATEGORIAS (
@@ -100,7 +89,6 @@ public class CreateTablesCommands {
         try (
                 // Preparar las sentencias de creación de tablas
                 PreparedStatement createUsersStmt = connection.prepareStatement(createUsersTable);
-                PreparedStatement createAhorrosStmt = connection.prepareStatement(createAhorrosTable);
                 PreparedStatement createCategoriasStmt = connection.prepareStatement(createCategoriasTable);
                 PreparedStatement createMovimientosStmt = connection.prepareStatement(createMovimientosTable);
                 PreparedStatement createGastosFijosStmt = connection.prepareStatement(createGastosFijosTable);
@@ -109,7 +97,6 @@ public class CreateTablesCommands {
             createUsersStmt.executeUpdate();
             createCategoriasStmt.executeUpdate();
             createMovimientosStmt.executeUpdate();
-            createAhorrosStmt.executeUpdate();
             System.out.println("Tablas creadas correctamente");
         } catch (SQLException e) {
             System.out.println("Error al crear las tablas");

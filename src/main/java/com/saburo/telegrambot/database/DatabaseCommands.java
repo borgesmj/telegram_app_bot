@@ -123,17 +123,19 @@ public class DatabaseCommands {
             saveInitialCapitalStmt.setString(4, "INGRESO");
             saveInitialCapitalStmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error al actualizar el ultimo login");
+            System.out.println("Error al crear el capital inicial");
             System.out.println(e);
         }
     }
 
     public void saveIniatialSavings(long userId, double initialSavings){
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "INSERT INTO AHORROS (MONTO, USER_ID) VALUES (?, ?)";
+        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, USER_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?)";
         try (PreparedStatement saveInitialSavingsStmt = connection.prepareStatement(SqlQueryString)){
-            saveInitialSavingsStmt.setDouble(1, initialSavings);
-            saveInitialSavingsStmt.setInt(2, currentUserId);
+            saveInitialSavingsStmt.setString(1, "AHORRO INICIAL");
+            saveInitialSavingsStmt.setDouble(2, initialSavings);
+            saveInitialSavingsStmt.setInt(3, currentUserId);
+            saveInitialSavingsStmt.setString(4, "AHORROS");
             saveInitialSavingsStmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error al actualizar el ultimo login");
