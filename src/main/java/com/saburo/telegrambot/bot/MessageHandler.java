@@ -61,6 +61,26 @@ public class MessageHandler {
             databaseCommands.saveIniatialSavings(newMessage.getFrom().getId(), userProfile.getAmmount());
             messageSender.sendMessage(newMessage, USER_MSG_10);
             userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), false);
+            userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), true);
+            userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "INGRESO");
+        } else if (userStatus.getIsWaitingForCategories(newMessage.getFrom().getId())){
+            if (userStatus.getTypeOfMovement(newMessage.getFrom().getId()).equals("INGRESO")){
+                String userText = newMessage.getText();
+                String[] userTextArray = userText.trim().split(",");
+                for (String category : userTextArray){
+                    databaseCommands.saveCategories(newMessage.getFrom().getId(), category.trim().toUpperCase(), userStatus.getTypeOfMovement(newMessage.getFrom().getId()));
+                }
+                userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "EGRESO");
+                messageSender.sendMessage(newMessage, USER_MSG_11);
+            } else{
+                String userText = newMessage.getText();
+                String[] userTextArray = userText.trim().split(",");
+                for (String category : userTextArray){
+                    databaseCommands.saveCategories(newMessage.getFrom().getId(), category.trim().toUpperCase(), userStatus.getTypeOfMovement(newMessage.getFrom().getId()));
+                }
+                userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
+                messageSender.sendMessage(newMessage, "configurado correctamente");
+            }
         }
     }
 }

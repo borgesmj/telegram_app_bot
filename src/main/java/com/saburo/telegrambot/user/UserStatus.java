@@ -18,6 +18,8 @@ public class UserStatus {
     private final Map<Long, Boolean> isWaitingForNewUsername;
     private final Map<Long, Boolean> isWaitingForNewCapital;
     private final Map<Long, Boolean> isWaitingForInitialSavings;
+    private final Map<Long, Boolean> isWaitingForCategories;
+    private final Map<Long, String> typeOfMovement;
 
     /**
      * Constructor de la clase UserStatus.
@@ -27,6 +29,8 @@ public class UserStatus {
         this.isWaitingForNewUsername = new HashMap<>();
         this.isWaitingForNewCapital = new HashMap<>();
         this.isWaitingForInitialSavings = new HashMap<>();
+        this.isWaitingForCategories = new HashMap<>();
+        this.typeOfMovement = new HashMap<>();
     }
     // Getters
     public boolean getIsWaitingForNewUsername(long userId) {
@@ -41,6 +45,14 @@ public class UserStatus {
         return isWaitingForInitialSavings.getOrDefault(userId, false);
     }
 
+    public boolean getIsWaitingForCategories(long userId){
+        return isWaitingForCategories.getOrDefault(userId, false);
+    }
+
+    public String getTypeOfMovement(long userId){
+        return typeOfMovement.getOrDefault(userId, "");
+    }
+
 
     // setters
     public void setIsWaitingForNewUsername(long userId, boolean status) {
@@ -53,5 +65,13 @@ public class UserStatus {
 
     public void setIsWaitingForInitialSavings(long userId, boolean status){
         isWaitingForInitialSavings.put(userId, status);
+    }
+
+    public void setIsWaitingForCategories(long userId, boolean status){
+        isWaitingForCategories.put(userId, status);
+    }
+
+    public void setTypeOfMovement(long userId, String type){
+        typeOfMovement.put(userId, type);
     }
 }

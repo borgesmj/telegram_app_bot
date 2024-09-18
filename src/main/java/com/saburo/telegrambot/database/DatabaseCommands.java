@@ -3,6 +3,7 @@ package com.saburo.telegrambot.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class DatabaseCommands {
             if (count < 1) {
                 return true;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al verificar el usuario");
             System.out.println(e);
         }
@@ -57,7 +58,7 @@ public class DatabaseCommands {
             LocalDateTime localDateTime = LocalDateTime.now(zoneId);
             insertUserStmt.setTimestamp(3, Timestamp.valueOf(localDateTime));
             insertUserStmt.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al insertar el usuario");
             System.out.println(e);
             return "nombre duplicado";
@@ -72,7 +73,7 @@ public class DatabaseCommands {
             ResultSet rs = getCurrentUsernameStmt.executeQuery();
             rs.next();
             return rs.getString("USERNAME");
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al obtener el nombre de usuario");
             System.out.println(e);
         }
@@ -85,7 +86,7 @@ public class DatabaseCommands {
             updateLastLoginStmt.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
             updateLastLoginStmt.setLong(2, userId);
             updateLastLoginStmt.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al actualizar el ultimo login");
             System.out.println(e);
         }
@@ -105,7 +106,7 @@ public class DatabaseCommands {
             } else {
                 System.out.println("No se encontró un usuario con ese nombre.");
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error al obtener el ID del usuario: " + e.getMessage());
         }
@@ -121,7 +122,7 @@ public class DatabaseCommands {
             saveInitialCapitalStmt.setInt(3, currentUserId);
             saveInitialCapitalStmt.setString(4, "INGRESO");
             saveInitialCapitalStmt.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al actualizar el ultimo login");
             System.out.println(e);
         }
@@ -134,8 +135,22 @@ public class DatabaseCommands {
             saveInitialSavingsStmt.setDouble(1, initialSavings);
             saveInitialSavingsStmt.setInt(2, currentUserId);
             saveInitialSavingsStmt.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al actualizar el ultimo login");
+            System.out.println(e);
+        }
+    }
+
+    public void saveCategories(long userId, String category, String typeOfMovement){
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = " INSERT INTO CATEGORIAS (NOMBRE, USER_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?)";
+        try (PreparedStatement saveCategoriesStmt = connection.prepareStatement(SqlQueryString)){
+            saveCategoriesStmt.setString(1, category);
+            saveCategoriesStmt.setInt(2, currentUserId);
+            saveCategoriesStmt.setString(3, typeOfMovement);
+            saveCategoriesStmt.execute();
+        } catch (SQLException e) {
+            System.out.println("Error al ingresar categoria");
             System.out.println(e);
         }
     }

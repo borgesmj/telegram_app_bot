@@ -119,7 +119,18 @@ public class TelegramBotContent {
 
                         Vas a escribir las categorias separadas por una coma.
 
-                        POr ejemplo: salario, freelance, otros ingresos, etc.
+                        Por ejemplo: salario, freelance, otros ingresos, etc.
 
+                        """;
+        public static final String USER_MSG_11 = """
+                        🤖:
+
+                        ✅ Que bien estamos trabajando tu y yo.
+
+                        VAmos a configurar ahora las categorias de los egresos.
+
+                        Igual que en el paso anterior, escribe en un mismo mensaje todas separadas por una coma.
+
+                        Por ejemplo: comida, entretenimiento, renta, otros etc.
                         """;
 }
