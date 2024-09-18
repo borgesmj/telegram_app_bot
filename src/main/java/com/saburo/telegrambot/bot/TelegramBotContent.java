@@ -18,7 +18,8 @@ public class TelegramBotContent {
                             """;
 
         /**
-         * Mensaje d ep´regunta si el usuario quiere dejar el nombre de usuario como lo tiene en su perfil de telegram o cambiarlo
+         * Mensaje d ep´regunta si el usuario quiere dejar el nombre de usuario como lo
+         * tiene en su perfil de telegram o cambiarlo
          */
         public static String USER_MSG_2(String username) {
                 return String.format("""
@@ -33,8 +34,9 @@ public class TelegramBotContent {
                                 /cambiarlo
                                 """, username);
         }
+
         /**
-         * Si el usuario no tiene nombre de usaurio en telegram, el bot le solicita uno 
+         * Si el usuario no tiene nombre de usaurio en telegram, el bot le solicita uno
          */
         public static final String USER_MSG_3 = """
                         🤖:
@@ -60,35 +62,64 @@ public class TelegramBotContent {
 
                         Disculpa, ese nombre de usuario ya ha sido utilizado. intenta con otro.
                                 """;
+
         /**
          * Si el nombre de usuario es valido y fué guardado con exito
          */
         public static String USER_MSG_6(String username) {
                 return String.format("""
                                 🤖:
-                                
+
                                 ✅ Excelente.
 
                                 Tu nombre fué guardado con éxito, ahora te llamaré *%s*
                                 """, username);
         }
+
         /**
-         * Mensaje de bienvenida para cuando el usuario entre con el comando /start y ya se encuentre guardado en la base de datos
+         * Mensaje de bienvenida para cuando el usuario entre con el comando /start y ya
+         * se encuentre guardado en la base de datos
          */
         public static String USER_MSG_7(String username) {
                 return String.format("""
-                        🤖:
+                                🤖:
 
-                        Bienvenido de vuelta, *%s*
-                        """, username);
+                                Bienvenido de vuelta, *%s*
+                                """, username);
         }
 
-        public static final String USER_MSG_8 ="""
-                🤖:
+        public static final String USER_MSG_8 = """
+                        🤖:
 
-                Ahora configuraremos tu capital inicial. 
-                
-                Escribe en un numero, sin puntos ni comas, el capital que tienes actualmente, o escribe solo un 0.
-                """;
+                        Ahora configuraremos tu capital inicial.
 
+                        Escribe en un numero, sin puntos ni comas, el capital que tienes actualmente, o escribe solo un 0.
+                        """;
+
+        public static final String USER_MSG_9 = """
+
+                        🤖:
+
+                        ✅ Genial.
+
+                        Ahora vamos a configurar tus ahorros. Escribe en un mensaje, sin comas ni puntos, el monto que quieras guardar en tus cuentas, o solo escribe 0.
+
+                        Este paso es para mantener las cuentas en orden, ya que para los proximos ahorros que guardes, se restarán de tu capital.
+
+                        """;
+        public static final String USER_MSG_10 = """
+                        
+                        🤖:
+
+                        ✅ Excelente. Tus ahorros fueron guardados
+
+                        Ahora configuraremos las categorias de tus movimientos.
+
+                        Comencemos con las de los INGRESO.
+
+                        Vas a escribir las categorias separadas por una coma.
+
+                        POr ejemplo: salario, freelance, otros ingresos, etc.
+
+                        """;
 }

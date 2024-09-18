@@ -53,8 +53,14 @@ public class MessageHandler {
         } else if (userStatus.getIsWaitingForNewCapital(newMessage.getFrom().getId())){
             userProfile.setAmmount(newMessage.getText());
             databaseCommands.saveInitialCapital(newMessage.getFrom().getId(), userProfile.getAmmount());
-            messageSender.sendMessage(newMessage, "guardado");
+            messageSender.sendMessage(newMessage, USER_MSG_9);
             userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), false);
-        } 
+            userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), true);
+        } else if(userStatus.getIsWaitingForInitialSavings(newMessage.getFrom().getId())){
+            userProfile.setAmmount(newMessage.getText());
+            databaseCommands.saveIniatialSavings(newMessage.getFrom().getId(), userProfile.getAmmount());
+            messageSender.sendMessage(newMessage, USER_MSG_10);
+            userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), false);
+        }
     }
 }

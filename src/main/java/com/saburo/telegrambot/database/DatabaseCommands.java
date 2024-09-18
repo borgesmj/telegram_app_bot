@@ -126,4 +126,17 @@ public class DatabaseCommands {
             System.out.println(e);
         }
     }
+
+    public void saveIniatialSavings(long userId, double initialSavings){
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "INSERT INTO AHORROS (MONTO, USER_ID) VALUES (?, ?)";
+        try (PreparedStatement saveInitialSavingsStmt = connection.prepareStatement(SqlQueryString)){
+            saveInitialSavingsStmt.setDouble(1, initialSavings);
+            saveInitialSavingsStmt.setInt(2, currentUserId);
+            saveInitialSavingsStmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error al actualizar el ultimo login");
+            System.out.println(e);
+        }
+    }
 }
