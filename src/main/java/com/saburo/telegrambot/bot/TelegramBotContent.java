@@ -66,6 +66,8 @@ public class TelegramBotContent {
         public static String USER_MSG_6(String username) {
                 return String.format("""
                                 🤖:
+                                
+                                ✅ Excelente.
 
                                 Tu nombre fué guardado con éxito, ahora te llamaré *%s*
                                 """, username);
@@ -75,10 +77,18 @@ public class TelegramBotContent {
          */
         public static String USER_MSG_7(String username) {
                 return String.format("""
-                                🤖:
+                        🤖:
 
-                                Bienvenido de vuelta, *%s*
-                                """, username);
+                        Bienvenido de vuelta, *%s*
+                        """, username);
         }
+
+        public static final String USER_MSG_8 ="""
+                🤖:
+
+                Ahora configuraremos tu capital inicial. 
+                
+                Escribe en un numero, sin puntos ni comas, el capital que tienes actualmente, o escribe solo un 0.
+                """;
 
 }

@@ -16,6 +16,7 @@ public class UserStatus {
      * un nuevo username. Si es {@code false}, no está esperando.
      */
     private final Map<Long, Boolean> isWaitingForNewUsername;
+    private final Map<Long, Boolean> isWaitingForNewCapital;
 
     /**
      * Constructor de la clase UserStatus.
@@ -23,13 +24,22 @@ public class UserStatus {
      */
     public UserStatus() {
         this.isWaitingForNewUsername = new HashMap<>();
+        this.isWaitingForNewCapital = new HashMap<>();
     }
     // Getters
     public boolean getIsWaitingForNewUsername(long userId) {
         return isWaitingForNewUsername.getOrDefault(userId, false);
     }
+
+    public boolean getIsWaitingForNewCapital(long userId){
+        return isWaitingForNewCapital.getOrDefault(userId, false);
+    }
     // setters
     public void setIsWaitingForNewUsername(long userId, boolean status) {
         isWaitingForNewUsername.put(userId, status);
+    }
+
+    public void setIsWaitingForNewCapital(long userId, boolean status){
+        isWaitingForNewCapital.put(userId, status);
     }
 }

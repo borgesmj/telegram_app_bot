@@ -79,6 +79,8 @@ public class CommandHandler {
                 userProfile.setUsername(newMessage.getFrom().getUserName());
                 databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getFrom().getUserName());
                 messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_6(userProfile.getUsername()));
+                userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), true);
+                messageSender.sendMessage(newMessage, USER_MSG_8);
                 break;
                 // comando por el cual el usario indica que quiere cambiar el nombre de usuario
             case "/cambiarlo":

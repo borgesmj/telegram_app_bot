@@ -11,6 +11,8 @@ public class UserProfile {
     private long telegramUserID;
     // Nombre de usuario asociado al perfil.
     private String username;
+    // Metodo para cambiar los montos instroducidos por el usuario a numero
+    private double doubleAmmount;
     /**
      * Estos parametros de abajo son para usarlos en un futuro
      */
@@ -34,6 +36,7 @@ public class UserProfile {
     public UserProfile(long userId) {
         this.telegramUserID = userId;
         this.username = "";
+        this.doubleAmmount = 0;
         /**
          * 
          * this.is_premium = false; // Valor predeterminado: el usuario no es premium
@@ -65,9 +68,21 @@ public class UserProfile {
         return username;
     }
 
+    public double getAmmount(){
+        return doubleAmmount;
+    }
+
     // Setters
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setAmmount(String userText){
+        try {
+            doubleAmmount = Double.parseDouble(userText);
+        } catch (NumberFormatException e) {
+            System.out.println("Error al convertir el texto a double");
+        }
     }
 
 

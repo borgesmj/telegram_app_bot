@@ -47,7 +47,14 @@ public class MessageHandler {
             } else{
                 userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), false);
                 messageSender.sendMessage(newMessage, USER_MSG_6(userProfile.getUsername()));
+                messageSender.sendMessage(newMessage, USER_MSG_8);
+                userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), true);
             }
-        }
+        } else if (userStatus.getIsWaitingForNewCapital(newMessage.getFrom().getId())){
+            userProfile.setAmmount(newMessage.getText());
+            databaseCommands.saveInitialCapital(newMessage.getFrom().getId(), userProfile.getAmmount());
+            messageSender.sendMessage(newMessage, "guardado");
+            userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), false);
+        } 
     }
 }

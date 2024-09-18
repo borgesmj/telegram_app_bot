@@ -90,4 +90,40 @@ public class DatabaseCommands {
             System.out.println(e);
         }
     }
+
+    public int getCurrentUserId(long userId) {
+        String getUserIdStatement = "SELECT ID FROM USERS WHERE TELEGRAM_ID = ?";
+        int currentUserId = -1; // Inicializamos userId con un valor por defecto
+
+        try (PreparedStatement userIdStmt = connection.prepareStatement(getUserIdStatement)) {
+            userIdStmt.setLong(1, userId); // Asegúrate de que USERNAME sea una variable válida
+            ResultSet rs = userIdStmt.executeQuery();
+
+            // Verificamos si hay un resultado antes de llamar a rs.getInt
+            if (rs.next()) {
+                currentUserId = rs.getInt(1); // Asigna el valor de ID a userId
+            } else {
+                System.out.println("No se encontró un usuario con ese nombre.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al obtener el ID del usuario: " + e.getMessage());
+        }
+        return currentUserId;
+    }
+
+    public void saveInitialCapital(long userId, double initialCapital){
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, USER_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement saveInitialCapitalStmt = connection.prepareStatement(SqlQueryString)){
+            saveInitialCapitalStmt.setString(1, "CAPITAL INICIAL");
+            saveInitialCapitalStmt.setDouble(2, initialCapital);
+            saveInitialCapitalStmt.setInt(3, currentUserId);
+            saveInitialCapitalStmt.setString(4, "INGRESO");
+            saveInitialCapitalStmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error al actualizar el ultimo login");
+            System.out.println(e);
+        }
+    }
 }
