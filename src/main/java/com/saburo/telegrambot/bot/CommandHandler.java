@@ -23,11 +23,11 @@ public class CommandHandler {
     private UserProfile userProfile;
     private UserStatus userStatus;
 
-    public CommandHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands, UserStatus userStatus) {
+    public CommandHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands, UserStatus userStatus, UserProfile userProfile) {
         this.newMessage = newMessage;
         this.messageSender = messageSender;
         this.databaseCommands = databaseCommands;
-        this.userProfile = new UserProfile(newMessage.getFrom().getId());
+        this.userProfile = userProfile;
         this.userStatus = userStatus;
     }
 /**

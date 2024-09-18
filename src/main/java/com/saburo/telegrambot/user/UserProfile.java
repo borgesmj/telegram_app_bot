@@ -33,8 +33,8 @@ public class UserProfile {
      * 
      * @param userId   ID único del usuario en Telegram.
      */
-    public UserProfile(long userId) {
-        this.telegramUserID = userId;
+    public UserProfile() {
+        this.telegramUserID = 0;
         this.username = "";
         this.doubleAmmount = 0;
         /**

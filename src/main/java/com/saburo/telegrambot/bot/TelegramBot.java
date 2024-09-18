@@ -8,6 +8,7 @@ import com.saburo.telegrambot.database.CreateTablesCommands;
 import com.saburo.telegrambot.database.DatabaseCommands;
 import com.saburo.telegrambot.database.DatabaseConnection;
 import com.saburo.telegrambot.user.UserStatus;
+import com.saburo.telegrambot.user.UserProfile;
 
 import java.sql.Connection;
 
@@ -30,6 +31,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final DatabaseCommands databaseCommands;
     // Instancia de UserStatus
     private final UserStatus userStatus;
+    // Instancia de UserProfile
+    private final UserProfile userProfile;
 
     /**
      * Constructor de la clase TelegramBot.
@@ -49,6 +52,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         databaseCommands = new DatabaseCommands(connection);
         // Iniciliza userStatus
         userStatus = new UserStatus();
+        // Inicializa userProfile
+        userProfile = new UserProfile();
     }
 
     /**
@@ -86,11 +91,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (message.hasText()){
             // Si el texto del mensaje comienza con "/", se considera un comando
             if (message.getText().startsWith("/")) {
-                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus);
+                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus, userProfile);
                 commandHandler.handleCommand();
             } else {
                 // Si el texto del mensaje no comienza con "/", se considera un mensaje normal
-                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus);
+                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus, userProfile);
                 messageHandler.handleMessage();
             }
         } else{
