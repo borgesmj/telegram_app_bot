@@ -4,6 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import com.saburo.telegrambot.database.DatabaseCommands;
 import com.saburo.telegrambot.user.UserProfile;
+import com.saburo.telegrambot.user.UserReports;
 import com.saburo.telegrambot.user.UserStatus;
 import static com.saburo.telegrambot.bot.TelegramBotContent.*;
 
@@ -23,15 +24,17 @@ public class MessageHandler {
     private DatabaseCommands databaseCommands;
     private UserStatus userStatus;
     private UserProfile userProfile;
-    private ErrorsHandler errorsHandler;
+    //private ErrorsHandler errorsHandler;
+    //private UserReports userReports;
 
-    public MessageHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands, UserStatus userStatus, UserProfile userProfile, ErrorsHandler errorsHandler){
+    public MessageHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands, UserStatus userStatus, UserProfile userProfile, ErrorsHandler errorsHandler, UserReports userReports){
         this.newMessage = newMessage;
         this.messageSender = messageSender;
         this.databaseCommands = databaseCommands;
         this.userProfile = userProfile;
         this.userStatus = userStatus;
-        this.errorsHandler = errorsHandler;
+        //this.errorsHandler = errorsHandler;
+        //this.userReports = userReports;
     }
     public void handleMessage(){
     /**

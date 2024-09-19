@@ -21,6 +21,12 @@ public class TelegramBotContent {
                         3. /nuevoahorro - *Nuevo Ahorro*
                         4. /reportes - *Reportes*
                         """;
+        public static final String SUB_MENU_REPORTES = """
+                        
+                        *MENU DE REPORTES*
+
+                        1. /balancegeneral
+                        """;
         /**
          * Mensaje de bienvenida al usuario nuevo
          */
@@ -227,6 +233,20 @@ public class TelegramBotContent {
 
                         Movimiento guardado con exito!!!
                         """;
+        public static String USER_REPORT_1(String ingresos, String egresos, String ahorros, String balance){
+                return String.format("""
+                        *Reporte General*
+                        
+                        Este es tu reporte general hasta la fecha:
+
+                        Ingresos: `%s`
+                        Egresos: `%s`
+
+                        Balance: `%s`
+
+                        Ahorros: `%s`
+                        """, ingresos, egresos, balance, ahorros);
+        }
         public static final String ERROR_MESSAGE ="""
                         🤖:
 

@@ -9,6 +9,7 @@ import com.saburo.telegrambot.database.DatabaseCommands;
 import com.saburo.telegrambot.database.DatabaseConnection;
 import com.saburo.telegrambot.user.UserStatus;
 import com.saburo.telegrambot.user.UserProfile;
+import com.saburo.telegrambot.user.UserReports;
 
 import java.sql.Connection;
 
@@ -35,6 +36,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final UserProfile userProfile;
     // Instancia de manejo de errores
     private final ErrorsHandler errorsHandler;
+    // Instancia de manejo de reportes
+    private final UserReports userReports;
 
     /**
      * Constructor de la clase TelegramBot.
@@ -57,6 +60,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         userProfile = new UserProfile();
         // Inicizaliza errorsHandler
         errorsHandler = new ErrorsHandler();
+        // Inicializamos userReports
+        userReports = new UserReports(connection);
     }
 
     /**
@@ -94,11 +99,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (message.hasText()){
             // Si el texto del mensaje comienza con "/", se considera un comando
             if (message.getText().startsWith("/")) {
-                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler);
+                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler, userReports);
                 commandHandler.handleCommand();
             } else {
                 // Si el texto del mensaje no comienza con "/", se considera un mensaje normal
-                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler);
+                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler, userReports);
                 messageHandler.handleMessage();
             }
         } else{

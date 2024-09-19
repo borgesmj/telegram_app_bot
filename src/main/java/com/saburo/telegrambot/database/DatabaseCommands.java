@@ -133,7 +133,7 @@ public class DatabaseCommands {
             if (rs.next()) {
                 currentUserId = rs.getInt(1); // Asigna el valor de ID a userId
             } else {
-                System.out.println("No se encontró un usuario con ese nombre.");
+                System.out.println("No se encontró un usuario con ese id.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -229,7 +229,7 @@ public class DatabaseCommands {
             if (rs.next()) {
                 categoryId = rs.getInt(1); // Asigna el valor de ID a userId
             } else {
-                System.out.println("No se encontró un usuario con ese nombre.");
+                System.out.println("No se encontró un usuario con esa categoria.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -323,4 +323,47 @@ public class DatabaseCommands {
         }
 
     }
-}
+
+    public double getAmmountsByTypeOfMovement(long userId, String typeOfMovement) {
+        int currentUserId = getCurrentUserId(userId);  // Obtén el ID del usuario actual
+        String SqlQueryString = "SELECT SUM(MONTO) FROM MOVIMIENTOS WHERE TIPO_MOVIMIENTO = ? AND USER_ID = ?";
+        double amount = 0;
+        
+        try (PreparedStatement getAmmountsByCategoryStmt = connection.prepareStatement(SqlQueryString)) {
+            getAmmountsByCategoryStmt.setString(1, typeOfMovement);  // Establecer el tipo de movimiento
+            getAmmountsByCategoryStmt.setInt(2, currentUserId);       // Establecer el ID del usuario
+            
+            ResultSet rs = getAmmountsByCategoryStmt.executeQuery();   // Ejecutar la consulta y obtener el resultado
+            
+            if (rs.next()) {  // Verificar si hay resultados
+                amount = rs.getDouble(1);  // Obtener el valor de la primera columna
+            }
+        } catch (Exception e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        
+        return amount;  // Devolver el monto
+    }
+
+    public double getSavingsWoutInitial(long userId) {
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT SUM(MONTO) FROM MOVIMIENTOS WHERE USER_ID = ? AND TIPO_MOVIMIENTO = ? AND DETALLES != ?";
+        double amount = 0;
+        try (PreparedStatement getAmmountsByCategoryStmt = connection.prepareStatement(SqlQueryString)){
+            getAmmountsByCategoryStmt.setInt(1, currentUserId);
+            getAmmountsByCategoryStmt.setString(2, "AHORROS");
+            getAmmountsByCategoryStmt.setString(3, "AHORRO INICIAL");
+            ResultSet rs = getAmmountsByCategoryStmt.executeQuery();   // Ejecutar la consulta y obtener el resultado
+            
+            if (rs.next()) {  // Verificar si hay resultados
+                amount = rs.getDouble(1);  // Obtener el valor de la primera columna
+            }
+        } catch (Exception e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return amount;  // Devolver el monto
+    }
+    
+}   
