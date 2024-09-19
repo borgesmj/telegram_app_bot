@@ -13,18 +13,6 @@ public class CreateTablesCommands {
     public CreateTablesCommands(Connection connection) {
         this.connection = connection;
     }
-
-    // Cambiar la zona horaria de la base de datos
-    public void setTimeZone() {
-        String setTimeZoneSql = "SET GLOBAL time_zone = '-05:00';"; // Cambia el offset según tu zona horaria
-        try (PreparedStatement setTimeZoneStmt = connection.prepareStatement(setTimeZoneSql)) {
-            setTimeZoneStmt.executeUpdate();
-            System.out.println("Zona horaria establecida correctamente");
-        } catch (SQLException e) {
-            System.out.println("Error al establecer la zona horaria");
-        }
-    }
-
     // Crear tablas
     public void createTablesCommand() {
         // Crear la tabla USERS
@@ -33,7 +21,7 @@ public class CreateTablesCommands {
                     ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     TELEGRAM_ID BIGINT NOT NULL,
                     USERNAME VARCHAR(50) UNIQUE,
-                    CREATED_AT timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    CREATED_AT timestamp NOT NULL,
                     IS_PREMIUM BOOLEAN NOT NULL DEFAULT FALSE,
                     EMAIL VARCHAR(50),
                     HASHED_PWD VARCHAR(200),
@@ -52,7 +40,7 @@ public class CreateTablesCommands {
                     ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     DETALLES VARCHAR(250) NOT NULL DEFAULT 'CAPITAL INICIAL',
                     MONTO DOUBLE NOT NULL,
-                    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CREATED_AT TIMESTAMP,
                     USER_ID INT NOT NULL,
                     CATEGORIA_ID INT,
                     TIPO_MOVIMIENTO ENUM('INGRESO', 'EGRESO', 'AHORROS'),
@@ -77,7 +65,7 @@ public class CreateTablesCommands {
                     ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     DETALLES VARCHAR(50),
                     MONTO DOUBLE NOT NULL,
-                    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                    CREATED_AT TIMESTAMP NOT NULL,
                     DIA_DEL_MES INT,
                     CATEGORIA_ID INT NOT NULL,
                     USER_ID INT NOT NULL,

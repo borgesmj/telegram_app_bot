@@ -16,7 +16,7 @@ import com.saburo.telegrambot.config.EnvConfig;
  */
 public class DatabaseConnection {
 
-    public static final String URL = "jdbc:mysql://localhost:3306/REGISTRO_FINANZAS";
+    public static final String URL = "jdbc:mysql://localhost:3306/REGISTRO_FINANZAS?serverTimezone=America/Bogota";
 
     public static Connection getConnection() {
         Connection connection = null;

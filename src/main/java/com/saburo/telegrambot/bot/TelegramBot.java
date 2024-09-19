@@ -44,7 +44,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.connection = DatabaseConnection.getConnection();
         // Crea las tablas necesarias en la base de datos usando CreateTablesCommands
         CreateTablesCommands createTablesCommands = new CreateTablesCommands(connection);
-        createTablesCommands.setTimeZone();
         createTablesCommands.createTablesCommand();
         // Inicializa el MessageSender con la instancia actual del bot
         messageSender = new MessageSender(this);

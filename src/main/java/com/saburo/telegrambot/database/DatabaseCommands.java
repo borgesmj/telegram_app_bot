@@ -21,6 +21,12 @@ public class DatabaseCommands {
         this.connection = connection;
     }
 
+    private Timestamp getCurrentTimestamp() {
+        ZoneId zoneId = ZoneId.of("America/Bogota");  // Definir la zona horaria correcta
+        LocalDateTime localDateTime = LocalDateTime.now(zoneId);  // Obtener la fecha y hora local
+        return Timestamp.valueOf(localDateTime);  // Convertir LocalDateTime a Timestamp
+    }
+
     /****
      * checkUserId
      * metodo para verificar si el usuario existe en la base de datos
@@ -52,13 +58,12 @@ public class DatabaseCommands {
      * @param username
      */
     public String insertNewUser(long userTelegramId, String username) {
-        String SqlQueryString = "INSERT INTO USERS (TELEGRAM_ID, USERNAME, LAST_LOGIN) VALUES (?, ?, ?)";
+        String SqlQueryString = "INSERT INTO USERS (TELEGRAM_ID, USERNAME, CREATED_AT, LAST_LOGIN) VALUES (?, ?, ?, ?)";
         try (PreparedStatement insertUserStmt = connection.prepareStatement(SqlQueryString)) {
             insertUserStmt.setLong(1, userTelegramId);
             insertUserStmt.setString(2, username.toLowerCase());
-            ZoneId zoneId = ZoneId.of("America/Bogota");
-            LocalDateTime localDateTime = LocalDateTime.now(zoneId);
-            insertUserStmt.setTimestamp(3, Timestamp.valueOf(localDateTime));
+            insertUserStmt.setTimestamp(3, getCurrentTimestamp());
+            insertUserStmt.setTimestamp(4, getCurrentTimestamp());
             insertUserStmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error al insertar el usuario");
@@ -99,7 +104,8 @@ public class DatabaseCommands {
     public void updateLastLogin(long userId){
         String SqlQueryString = "UPDATE USERS SET LAST_LOGIN = ? WHERE TELEGRAM_ID = ?";
         try (PreparedStatement updateLastLoginStmt = connection.prepareStatement(SqlQueryString)){
-            updateLastLoginStmt.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+            System.out.println(getCurrentTimestamp());
+            updateLastLoginStmt.setTimestamp(1, getCurrentTimestamp());
             updateLastLoginStmt.setLong(2, userId);
             updateLastLoginStmt.executeUpdate();
         } catch (SQLException e) {
@@ -145,12 +151,13 @@ public class DatabaseCommands {
 
     public void saveInitialCapital(long userId, double initialCapital){
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, USER_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?)";
+        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, CREATED_AT, USER_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement saveInitialCapitalStmt = connection.prepareStatement(SqlQueryString)){
             saveInitialCapitalStmt.setString(1, "CAPITAL INICIAL");
             saveInitialCapitalStmt.setDouble(2, initialCapital);
-            saveInitialCapitalStmt.setInt(3, currentUserId);
-            saveInitialCapitalStmt.setString(4, "INGRESO");
+            saveInitialCapitalStmt.setTimestamp(3, getCurrentTimestamp());
+            saveInitialCapitalStmt.setInt(4, currentUserId);
+            saveInitialCapitalStmt.setString(5, "INGRESO");
             saveInitialCapitalStmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error al crear el capital inicial");
@@ -167,12 +174,13 @@ public class DatabaseCommands {
 
     public void saveIniatialSavings(long userId, double initialSavings){
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, USER_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?)";
+        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, CREATED_AT, USER_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement saveInitialSavingsStmt = connection.prepareStatement(SqlQueryString)){
             saveInitialSavingsStmt.setString(1, "AHORRO INICIAL");
             saveInitialSavingsStmt.setDouble(2, initialSavings);
-            saveInitialSavingsStmt.setInt(3, currentUserId);
-            saveInitialSavingsStmt.setString(4, "AHORROS");
+            saveInitialSavingsStmt.setTimestamp(3, getCurrentTimestamp());
+            saveInitialSavingsStmt.setInt(4, currentUserId);
+            saveInitialSavingsStmt.setString(5, "AHORROS");
             saveInitialSavingsStmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error al actualizar el ultimo login");
@@ -243,13 +251,14 @@ public class DatabaseCommands {
     public void saveNewMovement(long userId, double amount, String details, String category, String typeOfMovement){
         int currentUserId = getCurrentUserId(userId);
         int categoryId = getCategoryId(category);
-        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, USER_ID, CATEGORIA_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?, ?)";
+        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, CREATED_AT, USER_ID, CATEGORIA_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement saveNewMovementStmt = connection.prepareStatement(SqlQueryString)){
             saveNewMovementStmt.setString(1, details);
             saveNewMovementStmt.setDouble(2, amount);
-            saveNewMovementStmt.setInt(3, currentUserId);
-            saveNewMovementStmt.setInt(4, categoryId);
-            saveNewMovementStmt.setString(5, typeOfMovement);
+            saveNewMovementStmt.setTimestamp(3, getCurrentTimestamp());
+            saveNewMovementStmt.setInt(4, currentUserId);
+            saveNewMovementStmt.setInt(5, categoryId);
+            saveNewMovementStmt.setString(6, typeOfMovement);
             saveNewMovementStmt.executeUpdate();
         } catch (Exception e) {
             System.out.println("Error al ingresar nuevo movimiento");
@@ -300,15 +309,16 @@ public class DatabaseCommands {
 
      public void saveNewSavings(long userId, double amount, String typeOfMovement){
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, USER_ID, TIPO_MOVIMIENTO) VALUES(?, ?, ?, ?);";
+        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, CREATED_AT, USER_ID, TIPO_MOVIMIENTO) VALUES(?, ?, ?, ?, ?);";
         try (PreparedStatement saveNewMovementStmt = connection.prepareStatement(SqlQueryString)){
             saveNewMovementStmt.setString(1, "AHORROS");
             saveNewMovementStmt.setDouble(2, amount);
-            saveNewMovementStmt.setInt(3, currentUserId);
-            saveNewMovementStmt.setString(4, typeOfMovement);
+            saveNewMovementStmt.setTimestamp(3, getCurrentTimestamp());
+            saveNewMovementStmt.setInt(4, currentUserId);
+            saveNewMovementStmt.setString(5, typeOfMovement);
             saveNewMovementStmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Error al ingresar nuevo movimiento");
+            System.out.println("Error al ingresar nuevo ahorro");
             System.out.println(e);
         }
 
