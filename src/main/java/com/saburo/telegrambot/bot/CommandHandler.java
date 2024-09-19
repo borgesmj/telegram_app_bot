@@ -22,13 +22,15 @@ public class CommandHandler {
     private DatabaseCommands databaseCommands;
     private UserProfile userProfile;
     private UserStatus userStatus;
+    private ErrorsHandler errorsHandler;
 
-    public CommandHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands, UserStatus userStatus, UserProfile userProfile) {
+    public CommandHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands, UserStatus userStatus, UserProfile userProfile, ErrorsHandler errorsHandler) {
         this.newMessage = newMessage;
         this.messageSender = messageSender;
         this.databaseCommands = databaseCommands;
         this.userProfile = userProfile;
         this.userStatus = userStatus;
+        this.errorsHandler = errorsHandler;
     }
 /**
  * Maneja los comandos recibidos a través de mensajes de Telegram.
@@ -46,6 +48,7 @@ public class CommandHandler {
         switch (newMessage.getText()) {
             case "/menu":
                 messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+                // con la entrada del comando /menu seteamos todos los estados a false, para qeu el bot no espere ningun texto fuera de un comando
                 userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
                 userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
                 userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);

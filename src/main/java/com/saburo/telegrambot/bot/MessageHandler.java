@@ -23,13 +23,15 @@ public class MessageHandler {
     private DatabaseCommands databaseCommands;
     private UserStatus userStatus;
     private UserProfile userProfile;
+    private ErrorsHandler errorsHandler;
 
-    public MessageHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands, UserStatus userStatus, UserProfile userProfile){
+    public MessageHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands, UserStatus userStatus, UserProfile userProfile, ErrorsHandler errorsHandler){
         this.newMessage = newMessage;
         this.messageSender = messageSender;
         this.databaseCommands = databaseCommands;
         this.userProfile = userProfile;
         this.userStatus = userStatus;
+        this.errorsHandler = errorsHandler;
     }
     public void handleMessage(){
     /**

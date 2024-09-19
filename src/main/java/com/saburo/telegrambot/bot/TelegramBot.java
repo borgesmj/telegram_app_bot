@@ -33,6 +33,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final UserStatus userStatus;
     // Instancia de UserProfile
     private final UserProfile userProfile;
+    // Instancia de manejo de errores
+    private final ErrorsHandler errorsHandler;
 
     /**
      * Constructor de la clase TelegramBot.
@@ -53,6 +55,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         userStatus = new UserStatus();
         // Inicializa userProfile
         userProfile = new UserProfile();
+        // Inicizaliza errorsHandler
+        errorsHandler = new ErrorsHandler();
     }
 
     /**
@@ -90,11 +94,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (message.hasText()){
             // Si el texto del mensaje comienza con "/", se considera un comando
             if (message.getText().startsWith("/")) {
-                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus, userProfile);
+                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler);
                 commandHandler.handleCommand();
             } else {
                 // Si el texto del mensaje no comienza con "/", se considera un mensaje normal
-                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus, userProfile);
+                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler);
                 messageHandler.handleMessage();
             }
         } else{
