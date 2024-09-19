@@ -91,12 +91,14 @@ public class UserProfile {
         this.username = username;
     }
 
-    public void setAmmount(String userText){
+    public boolean setAmmount(String userText){
         try {
             doubleAmmount = Double.parseDouble(userText);
         } catch (NumberFormatException e) {
             System.out.println("Error al convertir el texto a double");
+            return false;
         }
+        return true;
     }
 
     public void setMovementDetails(String userText){

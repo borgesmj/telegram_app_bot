@@ -19,6 +19,7 @@ public class TelegramBotContent {
                         1. /nuevoingreso - *Nuevo Ingreso*
                         2. /nuevoegreso - *Nuevo Egreso*
                         3. /nuevoahorro - *Nuevo Ahorro*
+                        4. /reportes - *Reportes*
                         """;
         /**
          * Mensaje de bienvenida al usuario nuevo
@@ -118,8 +119,6 @@ public class TelegramBotContent {
 
                         Ahora vamos a configurar tus ahorros. Escribe en un mensaje, sin comas ni puntos, el monto que quieras guardar en tus cuentas, o solo escribe 0.
 
-                        Este paso es para mantener las cuentas en orden, ya que para los proximos ahorros que guardes, se restarán de tu capital.
-
                         """;
         public static final String USER_MSG_10 = """
 
@@ -129,7 +128,7 @@ public class TelegramBotContent {
 
                         Ahora configuraremos las categorias de tus movimientos.
 
-                        Comencemos con las de los INGRESO.
+                        Comencemos con las de los *INGRESOS*.
 
                         Vas a escribir las categorias separadas por una coma.
 
@@ -141,7 +140,7 @@ public class TelegramBotContent {
 
                         ✅ Que bien estamos trabajando tu y yo.
 
-                        VAmos a configurar ahora las categorias de los egresos.
+                        VAmos a configurar ahora las categorias de los *EGRESOS*.
 
                         Igual que en el paso anterior, escribe en un mismo mensaje todas separadas por una coma.
 
@@ -207,5 +206,34 @@ public class TelegramBotContent {
                         🤖:
 
                         Movimiento guardado con exito!!!
+                        """;
+
+        public static final String USER_MSG_19 ="""
+                        🤖:
+
+                        *GUARDEMOS UN NUEVO AHORRO*
+
+                        `Ingresa el monto`
+
+                        Escribe en un mensaje, sin comas, si necesitas que tenga decimales, escribe con un punto.
+
+                        Ej: 120350.30
+
+                        Si quieres cancelar, haz click en /menu
+
+                        """;
+        public static final String USER_MSG_20 ="""
+                        🤖:
+
+                        Movimiento guardado con exito!!!
+                        """;
+        public static final String ERROR_MESSAGE ="""
+                        🤖:
+
+                        Tienes un error en tu monto, por favor incluye solo numeros.
+
+                        Si necesitas que sea con decimales, escribelo con un punto.
+
+                        Por ejemplo: 120000.30
                         """;
 }

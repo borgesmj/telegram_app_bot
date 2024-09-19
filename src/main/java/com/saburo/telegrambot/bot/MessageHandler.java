@@ -53,18 +53,28 @@ public class MessageHandler {
                 userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), true);
             }
         } else if (userStatus.getIsWaitingForNewCapital(newMessage.getFrom().getId())){
-            userProfile.setAmmount(newMessage.getText());
-            databaseCommands.saveInitialCapital(newMessage.getFrom().getId(), userProfile.getAmmount());
-            messageSender.sendMessage(newMessage, USER_MSG_9);
-            userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), false);
-            userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), true);
+            boolean isNumber = userProfile.setAmmount(newMessage.getText());
+            if (isNumber){
+                databaseCommands.saveInitialCapital(newMessage.getFrom().getId(), userProfile.getAmmount());
+                messageSender.sendMessage(newMessage, USER_MSG_9);
+                userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), true);
+
+            } else{
+                messageSender.sendMessage(newMessage, ERROR_MESSAGE);
+            }
         } else if(userStatus.getIsWaitingForInitialSavings(newMessage.getFrom().getId())){
-            userProfile.setAmmount(newMessage.getText());
-            databaseCommands.saveIniatialSavings(newMessage.getFrom().getId(), userProfile.getAmmount());
-            messageSender.sendMessage(newMessage, USER_MSG_10);
-            userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), false);
-            userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), true);
-            userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "INGRESO");
+            boolean isNumber = userProfile.setAmmount(newMessage.getText());
+            if (isNumber){
+
+                databaseCommands.saveIniatialSavings(newMessage.getFrom().getId(), userProfile.getAmmount());
+                messageSender.sendMessage(newMessage, USER_MSG_10);
+                userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), true);
+                userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "INGRESO");
+            } else{
+                messageSender.sendMessage(newMessage, ERROR_MESSAGE);
+            }
         } else if (userStatus.getIsWaitingForCategories(newMessage.getFrom().getId())){
             if (userStatus.getTypeOfMovement(newMessage.getFrom().getId()).equals("INGRESO")){
                 String userText = newMessage.getText();
@@ -91,10 +101,15 @@ public class MessageHandler {
              * formateadas en una lista con /, lo cual trata de comando y lo procesará por medio de @link CommandHandler
              */
         } else if (userStatus.getIsWaitingForNewAmmount(newMessage.getFrom().getId())){
-            userProfile.setAmmount(newMessage.getText());
-            messageSender.sendMessage(newMessage, USER_MSG_15);
-            userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
-            userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), true);
+            boolean isNumber = userProfile.setAmmount(newMessage.getText());
+            if (isNumber){
+
+                messageSender.sendMessage(newMessage, USER_MSG_15);
+                userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), true);
+            } else{
+                messageSender.sendMessage(newMessage, ERROR_MESSAGE);
+            }
             /**
              *isWaitingForDetails @link UserStatus espera que el usuario ingrese los detalles de la transaccion
              */
@@ -110,14 +125,19 @@ public class MessageHandler {
             }
             userStatus.setIsWaitingForCategory(newMessage.getFrom().getId(), true);
         } else if (userStatus.getIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId())){
-            userProfile.setAmmount(newMessage.getText());
-            databaseCommands.saveNewSavings(
-                newMessage.getFrom().getId(), 
-                userProfile.getAmmount(), 
-                userStatus.getTypeOfMovement(newMessage.getFrom().getId()));
-            userStatus.setIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId(), false);
-            messageSender.sendMessage(newMessage, "nuevo ahorro guardado");
-            messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+            boolean isNumber =  userProfile.setAmmount(newMessage.getText());
+            if(isNumber){
+
+                databaseCommands.saveNewSavings(
+                    newMessage.getFrom().getId(), 
+                    userProfile.getAmmount(), 
+                    userStatus.getTypeOfMovement(newMessage.getFrom().getId()));
+                userStatus.setIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId(), false);
+                messageSender.sendMessage(newMessage, USER_MSG_20);
+                messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+            } else{
+                messageSender.sendMessage(newMessage, ERROR_MESSAGE);
+            }
         }
     }
 }
