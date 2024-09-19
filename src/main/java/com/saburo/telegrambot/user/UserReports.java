@@ -7,6 +7,8 @@ import java.sql.Connection;
 
 /**
  * UserReports
+ * son los distintos reportes solciitados por el usuario
+ * 
  */
 public class UserReports {
     private final DatabaseCommands databaseCommands;
@@ -15,21 +17,30 @@ public class UserReports {
         this.databaseCommands = new DatabaseCommands(connection);
     }
 
+    /**
+     * getBalanceGeneral nos regresa el balance de saldos que tiene el usuario
+     * @args userId es el id del usuario que se quiere obtener el balance
+     * @code totalIncome es la suma de todos los ingresos que tiene el usuario
+     * @code totalOutcome es la suma de todos los egresos que tiene el usuario
+     * @code totalSavings es la suma de todos los ahorros que tiene el usuario
+     * @code getSavingsWoutInitial es la suma de todos los ahorros que tiene el usuario sin el primer ahorro, el ahorro inicial que se configura cuando el usuario se registra en la app
+     * @code newBalance es la suma de todos los ingresos menos los egresos menos los ahorros
+     * @return newReport es el reporte reado en @link TelegramBotContent y que se va a enviar al usuario en la clase @link CommandHandler
+     */
     public String getBalanceGeneral(long userId) {
-        // Lógica para obtener el balance general del usuario
         double totalIncome = databaseCommands.getAmmountsByTypeOfMovement(userId, "INGRESO");
         double totalOutcome = databaseCommands.getAmmountsByTypeOfMovement(userId, "EGRESO");
         double totalSavings = databaseCommands.getAmmountsByTypeOfMovement(userId, "AHORROS");
-        double totalIncomeWOutInitialSavins = databaseCommands.getSavingsWoutInitial(userId);
-        double newBalance = totalIncome - totalOutcome - totalIncomeWOutInitialSavins;
+        double getSavingsWoutInitial = databaseCommands.getSavingsWoutInitial(userId);
+        double newBalance = totalIncome - totalOutcome - getSavingsWoutInitial;
         // Convertir los valores double a String
         String incomeString = String.format("%.2f", totalIncome);
         String outcomeString = String.format("%.2f", totalOutcome);
         String savingsString = String.format("%.2f", totalSavings);
         String balanceString = String.format("%.2f", newBalance);
-        System.out.println(incomeString + outcomeString + savingsString + balanceString);
-        // Llama al método estático directamente desde la clase
+        // Llama al método estático directamente desde la clase TelegramBotContent
         String newReport = TelegramBotContent.USER_REPORT_1(incomeString, outcomeString, savingsString, balanceString);
+        // se envia el String a commandHandler para que envie como mensaje al usuario
         return newReport;
     }
 }
