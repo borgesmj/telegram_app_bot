@@ -495,4 +495,40 @@ public class DatabaseCommands {
         }
         return "";
     }
+
+    public Double getCapitalInicial(long userId){
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT MONTO FROM MOVIMIENTOS WHERE DETALLES = ? AND USER_ID = ?";
+        Double monto = 0.0;
+        try (PreparedStatement getCapitalInicialStmt = connection.prepareStatement(SqlQueryString)){
+            getCapitalInicialStmt.setString(1, "CAPITAL INICIAL");
+            getCapitalInicialStmt.setInt(2, currentUserId);
+            ResultSet rs = getCapitalInicialStmt.executeQuery();
+            if (rs.next()) {
+                monto = rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return monto;
+    }
+
+    public double getInitialSavings(long userId){
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT MONTO FROM MOVIMIENTOS WHERE DETALLES = ? AND USER_ID = ?";
+        Double monto = 0.0;
+        try (PreparedStatement getInitialSavingsStmt = connection.prepareStatement(SqlQueryString)){
+            getInitialSavingsStmt.setString(1, "AHORRO INICIAL");
+            getInitialSavingsStmt.setInt(2, currentUserId);
+            ResultSet rs = getInitialSavingsStmt.executeQuery();
+            if (rs.next()){
+                monto = rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return monto;
+    }
 }   

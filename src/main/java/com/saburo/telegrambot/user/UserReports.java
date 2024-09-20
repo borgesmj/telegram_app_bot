@@ -117,8 +117,12 @@ public class UserReports {
             double savings = databaseCommands.getSavingsCurrentMonth(userId, monthInt);
             String savingsString = String.format("%.2f", savings);
             newReport += "\n";
+            // AHORROS MES ACTUAL
             newReport += "🔒 *Ahorros este mes:* `" + savingsString + "`";
+            // AHORROS TOTALES
             double totalSavings = databaseCommands.getTotalSavings(userId);
+            double capitalInicial = databaseCommands.getCapitalInicial(userId);
+            double initialSavings = databaseCommands.getInitialSavings(userId);
             String totalSavingsString = String.format("%.2f", totalSavings);
             newReport += "\n";
             newReport += "💰 *Total ahorros:* `" + totalSavingsString + "`";
@@ -127,7 +131,7 @@ public class UserReports {
             newReport += "\n";
             String totalOutcomeString = String.format("%.2f", totalOutcome);
             newReport += "🔴 *Total Egresos:* `" + totalOutcomeString + "`";
-            balance = totalIncome - totalOutcome - savings;
+            balance = capitalInicial + totalIncome - totalOutcome - savings + initialSavings;
             String balanceString = String.format("%.2f", balance);
             newReport += "\n";
             newReport += "⚖️ *Balance final:* `" + balanceString + "`";
