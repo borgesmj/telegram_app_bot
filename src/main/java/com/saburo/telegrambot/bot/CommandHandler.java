@@ -175,25 +175,35 @@ public class CommandHandler {
                 userStatus.setIsWaitingForMonth(newMessage.getFrom().getId(), true);
                 messageSender.sendMessage(newMessage, SUB_MENU_MESES);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
-            break;
+                break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
                  */
                 if (newMessage.getText().startsWith("/ver")) {
-                    String parts = newMessage.getText().replace("/ver", "");
-                    Pattern pattern = Pattern.compile("0+(?=[1-9])");
-                    Matcher matcher = pattern.matcher(parts);
-                    String stringId = "";
+                    // Obtener la parte del mensaje que contiene el ID
+                    String parts = newMessage.getText().replace("/ver", "").trim(); 
+                    // Eliminar comando y espacios en blanco
+                    // Eliminar ceros iniciales, pero mantener el '0' si es el único carácter
+                    String stringId = parts.replaceFirst("^0+(?!$)", "");
+                    // Convertir a entero
                     int movementId = 0;
-                    while (matcher.find()) {
-                        stringId = parts.replaceFirst(matcher.group(), "");
+                    try {
+                        movementId = Integer.parseInt(stringId); // Intentamos convertir el string a int
+                    } catch (NumberFormatException e) {
+                        System.out.println("Error: el ID no es válido");
                     }
-                    movementId = Integer.parseInt(stringId);
-                    String movementReport = userReports.getMovementById(movementId);
-                    messageSender.sendMessage(newMessage, movementReport);
-                    messageSender.sendMessage(newMessage, USER_MSG_21);
-                    messageSender.sendMessage(newMessage, USER_MSG_22);
+
+                    // Si tenemos un ID válido, hacemos el resto de la lógica
+                    if (movementId > 0) {
+                        System.out.println(movementId);
+                        String movementReport = userReports.getMovementById(movementId);
+                        messageSender.sendMessage(newMessage, movementReport);
+                        messageSender.sendMessage(newMessage, USER_MSG_21);
+                        messageSender.sendMessage(newMessage, USER_MSG_22);
+                    } else {
+                        System.out.println("Error: el ID no es válido o es cero.");
+                    }
                 } else if (userStatus.getIsWaitingForCategory(newMessage.getFrom().getId())) {
                     userProfile.setCategory(newMessage.getText().replace("/", "").trim().toUpperCase());
                     databaseCommands.saveNewMovement(
@@ -207,16 +217,16 @@ public class CommandHandler {
                     userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
                     userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
                     messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
-                } else if (userStatus.getIsWaitingForMonth(newMessage.getFrom().getId())){
+                } else if (userStatus.getIsWaitingForMonth(newMessage.getFrom().getId())) {
                     // Creamos un integer con el numero del mes ingresado por el usuario
                     userProfile.setMonth(
-                        newMessage.getText().replace("/", "").toLowerCase()
-                    );
-                    // Creamos un reporte llamando a la funcion getTotalByMonthCategoryType de @link UserReports
+                            newMessage.getText().replace("/", "").toLowerCase());
+                    // Creamos un reporte llamando a la funcion getTotalByMonthCategoryType de @link
+                    // UserReports
                     String newReport = userReports.getTotalByMonthCategoryType(
-                        newMessage.getFrom().getId(),
-                        userProfile.getMonth(), 
-                        newMessage.getText().replace("/", "").toLowerCase());
+                            newMessage.getFrom().getId(),
+                            userProfile.getMonth(),
+                            newMessage.getText().replace("/", "").toLowerCase());
                     // Enviamos el mensaje al usuario
                     messageSender.sendMessage(newMessage, newReport);
                     messageSender.sendMessage(newMessage, USER_MSG_21);
