@@ -160,6 +160,12 @@ public class CommandHandler {
             case "/balancegeneral":
                 String newUserReport = userReports.getBalanceGeneral(newMessage.getFrom().getId());
                 messageSender.sendMessage(newMessage, newUserReport);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+            break;
+            case "/ultimosmovimientos":
+                String lastMovements = userReports.getUltimosMovimientos(newMessage.getFrom().getId());
+                messageSender.sendMessage(newMessage, lastMovements);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
             break;
             default:
                 /**

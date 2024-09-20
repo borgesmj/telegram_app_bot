@@ -278,9 +278,6 @@ public class DatabaseCommands {
     public List<String> getCategories(long userId, String typeOfMovement) {
         List<String> categories = new ArrayList<>();
         int currentUserId = getCurrentUserId(userId);
-        System.out.println("type: " + typeOfMovement);
-        System.out.println("userId: " + currentUserId);
-        System.out.println("getCategories");
         String insertUserSql = "SELECT NOMBRE FROM CATEGORIAS WHERE USER_ID = ? AND TIPO_MOVIMIENTO = ?";
         try (PreparedStatement insertUserStmt = connection.prepareStatement(insertUserSql)) {
             insertUserStmt.setInt(1, currentUserId);
@@ -317,7 +314,7 @@ public class DatabaseCommands {
             saveNewMovementStmt.setInt(4, currentUserId);
             saveNewMovementStmt.setString(5, typeOfMovement);
             saveNewMovementStmt.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al ingresar nuevo ahorro");
             System.out.println(e);
         }
@@ -338,7 +335,7 @@ public class DatabaseCommands {
             if (rs.next()) {  // Verificar si hay resultados
                 amount = rs.getDouble(1);  // Obtener el valor de la primera columna
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al generar monto");
             System.out.println(e);
         }
@@ -359,11 +356,30 @@ public class DatabaseCommands {
             if (rs.next()) {  // Verificar si hay resultados
                 amount = rs.getDouble(1);  // Obtener el valor de la primera columna
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al generar monto");
             System.out.println(e);
         }
         return amount;  // Devolver el monto
     }
     
+
+    public List<String> getUltimosDiezMovimientos(long userId){
+        List<String> movimientos = new ArrayList<>();
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = """
+            SELECT CONCAT(LPAD(ID, 3, '0'), "+", DETALLES, "+", MONTO, "+", TIPO_MOVIMIENTO) AS TRANSACCION FROM MOVIMIENTOS WHERE TIPO_MOVIMIENTO != 'AHORROS'  AND DETALLES != 'AHORRO INICIAL'  AND DETALLES != 'CAPITAL INICIAL'  AND USER_ID = ? ORDER BY CREATED_AT DESC LIMIT 10
+                """;
+        try (PreparedStatement getUltimosMovimientosStmt = connection.prepareStatement(SqlQueryString)){
+            getUltimosMovimientosStmt.setInt(1, currentUserId);
+            ResultSet rs = getUltimosMovimientosStmt.executeQuery();
+            while (rs.next()) {
+                movimientos.add(rs.getString("TRANSACCION"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return movimientos;
+    }
 }   

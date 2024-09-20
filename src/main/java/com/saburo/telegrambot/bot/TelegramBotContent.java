@@ -22,10 +22,11 @@ public class TelegramBotContent {
                         4. /reportes - *Reportes*
                         """;
         public static final String SUB_MENU_REPORTES = """
-                        
+
                         *MENU DE REPORTES*
 
                         1. /balancegeneral
+                        2. /ultimosmovimientos
                         """;
         /**
          * Mensaje de bienvenida al usuario nuevo
@@ -208,13 +209,13 @@ public class TelegramBotContent {
 
                         No tienes categorias guardadas. Guarda tu primera categoria en /nuevacategoria
                         """;
-        public static final String USER_MSG_18= """
+        public static final String USER_MSG_18 = """
                         🤖:
 
                         Movimiento guardado con exito!!!
                         """;
 
-        public static final String USER_MSG_19 ="""
+        public static final String USER_MSG_19 = """
                         🤖:
 
                         *GUARDEMOS UN NUEVO AHORRO*
@@ -228,26 +229,69 @@ public class TelegramBotContent {
                         Si quieres cancelar, haz click en /menu
 
                         """;
-        public static final String USER_MSG_20 ="""
+        public static final String USER_MSG_20 = """
                         🤖:
 
                         Movimiento guardado con exito!!!
                         """;
-        public static String USER_REPORT_1(String ingresos, String egresos, String ahorros, String balance){
+        public static final String USER_MSG_21 ="""
+                        Presiona /menu para regresar al menu pricipal
+                        """;
+        public static String USER_REPORT_1(String ingresos, String egresos, String ahorros, String balance) {
                 return String.format("""
-                        *Reporte General*
-                        
-                        Este es tu reporte general hasta la fecha:
+                                🤖:
+                                
+                                *Reporte General*
 
-                        Ingresos: `%s`
-                        Egresos: `%s`
+                                Este es tu reporte general hasta la fecha:
 
-                        Balance: `%s`
+                                Ingresos: `%s`
+                                Egresos: `%s`
 
-                        Ahorros: `%s`
-                        """, ingresos, egresos, balance, ahorros);
+                                Balance: `%s`
+
+                                Ahorros: `%s`
+                                """, ingresos, egresos, balance, ahorros);
         }
-        public static final String ERROR_MESSAGE ="""
+
+        public static String USER_REPORT_2(List<String> movimientos) {
+                StringBuilder report = new StringBuilder("""
+                                🤖:
+                                
+                                *Aquí tienes tus últimos 10 movimientos*
+
+                                """);
+                // Iteramos sobre la listade movimientos para agregarlos al reporte
+                for (int i = 0; i < movimientos.size(); i++) {
+                        String movimiento = movimientos.get(i);
+                        String[] parts = movimiento.split("\\+");
+                        report.append("/ver");
+                        report.append(parts[0]);
+                        report.append(" ");
+                        String emoji = parts[3].equals("INGRESO") ? "⬆️" : "⬇️"; // Selecciona el emoji según el tipo de movimiento
+                        report.append(emoji).append(" ");
+                        report.append(parts[1]);
+                        report.append(" " );
+                        report.append("\n");
+                        
+                }
+
+                // Itera sobre la lista de movimientos y tipos para agregar flecha dependiendo
+                // del tipo
+                /*
+                 * 
+                 for (int i = 0; i < movimientos.size(); i++) {
+                         String emoji = tipo.equals("INGRESO") ? "⬆️" : "⬇️"; // Selecciona el emoji según el tipo de
+                         // movimiento
+                         report.append(i + 1).append(". ").append(emoji).append(" ").append(movimientos.get(i))
+                         .append("\n");
+                        }
+                        */
+
+                return report.toString();
+        }
+
+        public static final String ERROR_MESSAGE = """
                         🤖:
 
                         Tienes un error en tu monto, por favor incluye solo numeros.
