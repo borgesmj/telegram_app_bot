@@ -7,8 +7,6 @@ import com.saburo.telegrambot.user.UserReports;
 import com.saburo.telegrambot.user.UserStatus;
 
 import static com.saburo.telegrambot.bot.TelegramBotContent.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Clase que recibe un mensaje de @link TelegramBot si es un comando con /
@@ -27,6 +25,7 @@ public class CommandHandler {
     private UserStatus userStatus;
     // private ErrorsHandler errorsHandler;
     private UserReports userReports;
+    private String username;
 
     public CommandHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands,
             UserStatus userStatus, UserProfile userProfile, ErrorsHandler errorsHandler, UserReports userReports) {
@@ -37,6 +36,7 @@ public class CommandHandler {
         this.userStatus = userStatus;
         // this.errorsHandler = errorsHandler;
         this.userReports = userReports;
+        this.username = "";
 
     }
 
@@ -61,6 +61,8 @@ public class CommandHandler {
         switch (newMessage.getText()) {
             case "/menu":
                 messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+                username = databaseCommands.getCurrentUsername(newMessage.getFrom().getId());
+                userProfile.setUsername(username);
                 // con la entrada del comando /menu seteamos todos los estados a false, para qeu
                 // el bot no espere ningun texto fuera de un comando
                 userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
@@ -93,9 +95,10 @@ public class CommandHandler {
                  * @return true o false
                  * 
                  */
-                String username = newMessage.getFrom().getUserName();
+                username = newMessage.getFrom().getUserName();
                 if (isNewUser) {
                     messageSender.sendMessage(newMessage, USER_MSG_1);
+                    databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getFrom().getUserName());
                     if (username != null) {
                         messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_2(username));
                     } else {
@@ -104,7 +107,6 @@ public class CommandHandler {
                     }
                 } else {
                     username = databaseCommands.getCurrentUsername(newMessage.getFrom().getId());
-                    userProfile.setUsername(username);
                     databaseCommands.updateLastLogin(newMessage.getFrom().getId());
                     messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_7(username));
                     messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
@@ -113,7 +115,7 @@ public class CommandHandler {
             // comando por el cual el usario indica que quiere dejar el nombre de usuario
             // como lo tiene en su perfil de telegram
             case "/estabienasi":
-                userProfile.setUsername(newMessage.getFrom().getUserName());
+                userProfile.setUsername(username);
                 databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getFrom().getUserName());
                 messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_6(userProfile.getUsername()));
                 userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), true);

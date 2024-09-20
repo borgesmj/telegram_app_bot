@@ -479,4 +479,20 @@ public class DatabaseCommands {
         }
         return monto;
     }
+
+    public String updateUsername(long userId, String username){
+        int currentUserId = getCurrentUserId(userId);
+
+        String SqlQueryString = " UPDATE USERS SET USERNAME = ? WHERE ID = ?";
+        try (PreparedStatement updateUsernameStmt = connection.prepareStatement(SqlQueryString)){
+            updateUsernameStmt.setString(1, username);
+            updateUsernameStmt.setInt(2, currentUserId);
+            updateUsernameStmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+            return "mensaje de error";
+        }
+        return "";
+    }
 }   

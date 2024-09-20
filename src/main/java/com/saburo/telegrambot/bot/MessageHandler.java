@@ -45,15 +45,19 @@ public class MessageHandler {
 
         if(userStatus.getIsWaitingForNewUsername(newMessage.getFrom().getId())){
             // obtiene el texto del usuario y lo guarda en el perfil
-            userProfile.setUsername(newMessage.getText());
+            /**
+             * NOTA: este metodo llevarlo directo a la base de datos, y obtener el username desde alli con el setter de @link @userProfile.setUsername
+             * 
+             */
+            
             // inserta el nuevo nombre de usuario en la base de datos
-            String errorMessage =  databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getText());
+            String errorMessage =  databaseCommands.updateUsername(newMessage.getFrom().getId(), newMessage.getText());
             // si el nombre de usuario no se encuentra en la base de datos, el metodo retorna "", de lo contrario, retorna un mensaje que se enviará al usuario y mantiene el estado de isWaitingForNewUsername en true, hasta que coloque un nombre de usuario válido
             if(errorMessage != ""){
                 messageSender.sendMessage(newMessage, USER_MSG_5);
             } else{
                 userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), false);
-                messageSender.sendMessage(newMessage, USER_MSG_6(userProfile.getUsername()));
+                messageSender.sendMessage(newMessage, USER_MSG_6(newMessage.getText()));
                 messageSender.sendMessage(newMessage, USER_MSG_8);
                 userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), true);
             }
