@@ -72,6 +72,7 @@ public class CommandHandler {
                 userStatus.setIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId(), false);
                 userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
                 userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "");
+                userStatus.setIsWaitingForMonth(newMessage.getFrom().getId(), false);
                 break;
             case "/start":
                 /**
@@ -170,6 +171,11 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, lastMovements);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
                 break;
+            case "/reportemensual":
+                userStatus.setIsWaitingForMonth(newMessage.getFrom().getId(), true);
+                messageSender.sendMessage(newMessage, SUB_MENU_MESES);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+            break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
@@ -201,6 +207,20 @@ public class CommandHandler {
                     userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
                     userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
                     messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+                } else if (userStatus.getIsWaitingForMonth(newMessage.getFrom().getId())){
+                    // Creamos un integer con el numero del mes ingresado por el usuario
+                    userProfile.setMonth(
+                        newMessage.getText().replace("/", "").toLowerCase()
+                    );
+                    // Creamos un reporte llamando a la funcion getTotalByMonthCategoryType de @link UserReports
+                    String newReport = userReports.getTotalByMonthCategoryType(
+                        newMessage.getFrom().getId(),
+                        userProfile.getMonth(), 
+                        newMessage.getText().replace("/", "").toLowerCase());
+                    // Enviamos el mensaje al usuario
+                    messageSender.sendMessage(newMessage, newReport);
+                    messageSender.sendMessage(newMessage, USER_MSG_21);
+                    messageSender.sendMessage(newMessage, USER_MSG_23);
                 }
                 break;
         }

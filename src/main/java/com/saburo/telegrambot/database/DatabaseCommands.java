@@ -402,4 +402,81 @@ public class DatabaseCommands {
         }
         return "";
     }
+
+    public double getTotalByMonthCategory(long userId, String category, int monthInt){
+        int currentUserId = getCurrentUserId(userId);
+        int categoryId = getCategoryId(category);
+        double result = 0;
+        String SqlQueryString = "SELECT SUM(MONTO) FROM MOVIMIENTOS WHERE USER_ID = ? AND CATEGORIA_ID = ? AND MONTH(CREATED_AT) = ?;";
+        try (PreparedStatement getTotalByMonthCategoryStmt = connection.prepareStatement(SqlQueryString)){
+            getTotalByMonthCategoryStmt.setInt(1, currentUserId);
+            getTotalByMonthCategoryStmt.setInt(2, categoryId);
+            getTotalByMonthCategoryStmt.setInt(3, monthInt);
+            ResultSet rs = getTotalByMonthCategoryStmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getDouble(1);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return result;
+    }
+
+    public int checkForMovements(long userId, int monthInt){
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT COUNT(*) FROM MOVIMIENTOS WHERE MONTH(CREATED_AT) = ? AND USER_ID = ?";
+        int count = 0;
+        try (PreparedStatement getMovementsByMonthStmt = connection.prepareStatement(SqlQueryString)){
+            getMovementsByMonthStmt.setInt(1, monthInt);
+            getMovementsByMonthStmt.setInt(2, currentUserId);
+            ResultSet rs = getMovementsByMonthStmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return count;
+    }
+
+    public double getSavingsCurrentMonth(long userId, int monthInt){
+        double result = 0;
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT SUM(MONTO) FROM MOVIMIENTOS WHERE TIPO_MOVIMIENTO = ? AND MONTH(CREATED_AT) = ? AND USER_ID = ?";
+        try (PreparedStatement getSavingsCurrentMonthStmt = connection.prepareStatement(SqlQueryString)){
+            getSavingsCurrentMonthStmt.setString(1, "AHORROS");
+            getSavingsCurrentMonthStmt.setInt(2, monthInt);
+            getSavingsCurrentMonthStmt.setInt(3, currentUserId);
+            ResultSet rs = getSavingsCurrentMonthStmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return result;
+    }
+
+    public double getTotalSavings(long userId){
+        int currentUserId = getCurrentUserId(userId);
+        double monto = 0;
+        String SqlQueryString = "SELECT SUM(MONTO) FROM MOVIMIENTOS WHERE TIPO_MOVIMIENTO = ? AND USER_ID = ?";
+        try (PreparedStatement getTotalSavingsStmt = connection.prepareStatement(SqlQueryString)){
+            getTotalSavingsStmt.setString(1, "AHORROS");
+            getTotalSavingsStmt.setInt(2, currentUserId);
+            ResultSet rs = getTotalSavingsStmt.executeQuery();
+            if (rs.next()) {
+                monto = rs.getDouble(1);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return monto;
+    }
 }   

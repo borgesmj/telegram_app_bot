@@ -49,7 +49,6 @@ public class UserReports {
         // se envia el String a commandHandler para que envie como mensaje al usuario
         return newReport;
     }
-    
 
     public String getUltimosMovimientos(long userId) {
         String newReport = "";
@@ -58,11 +57,85 @@ public class UserReports {
         return newReport;
     }
 
-    public String getMovementById(int movementId){
+    public String getMovementById(int movementId) {
         String newReport = "";
         String movimiento = databaseCommands.getMovementById(movementId);
         String[] parts = movimiento.split("\\+");
         newReport = TelegramBotContent.USER_REPORT_3(parts[2], parts[0], parts[1], parts[3], parts[4]);
         return newReport;
     }
+
+    public String getTotalByMonthCategoryType(long userId, int monthInt, String monthString) {
+        int count = databaseCommands.checkForMovements(userId, monthInt);
+        String newReport = "";
+        if (count == 0) {
+            newReport = String.format("""
+                🤖 Hola! 👋
+
+                Parece que no has registrado movimientos durante el mes de *%s*.
+                
+                ¡Recuerda que es importante llevar un buen control de tus finanzas! 😊
+
+                """, monthString);
+            return newReport;
+        } else {
+
+            double totalIncome = 0;
+            double totalOutcome = 0;
+            double balance = 0;
+            newReport = String.format("""
+                    🤖:
+                    
+                    ¡Hola! Aquí está tu reporte para el mes de *%s* 📊
+                    
+                    """, monthString);
+
+            newReport += "💰 *Ingresos:*";
+            List<String> categoriasIngresos = databaseCommands.getCategories(userId, "INGRESO");
+            for (String categoria : categoriasIngresos) {
+                Double ammount = databaseCommands.getTotalByMonthCategory(userId, categoria, monthInt);
+                String ammountString = String.format("%.2f", ammount);
+                totalIncome += ammount;
+                newReport += "\n";
+                newReport += "➡️ *" + categoria + ":* `" + ammountString + "`";
+            }
+            newReport += "\n\n";
+
+            newReport += "💸 *Egresos:*";
+            List<String> categoriasEgresos = databaseCommands.getCategories(userId, "EGRESO");
+            for (String categoria : categoriasEgresos) {
+                Double ammount = databaseCommands.getTotalByMonthCategory(userId, categoria, monthInt);
+                String ammountString = String.format("%.2f", ammount);
+                totalOutcome += ammount;
+                newReport += "\n";
+                newReport += "⬅️ *" + categoria + ":* `" + ammountString + "`";
+            }
+            newReport += "\n\n";
+
+            newReport += "📊 *Resumen general:*\n";
+            String totalIncomeString = String.format("%.2f", totalIncome);
+            double savings = databaseCommands.getSavingsCurrentMonth(userId, monthInt);
+            String savingsString = String.format("%.2f", savings);
+            newReport += "\n";
+            newReport += "🔒 *Ahorros este mes:* `" + savingsString + "`";
+            double totalSavings = databaseCommands.getTotalSavings(userId);
+            String totalSavingsString = String.format("%.2f", totalSavings);
+            newReport += "\n";
+            newReport += "💰 *Total ahorros:* `" + totalSavingsString + "`";
+            newReport += "\n\n";
+            newReport += "🔵 *Total Ingresos:* `" + totalIncomeString + "`";
+            newReport += "\n";
+            String totalOutcomeString = String.format("%.2f", totalOutcome);
+            newReport += "🔴 *Total Egresos:* `" + totalOutcomeString + "`";
+            balance = totalIncome - totalOutcome - savings;
+            String balanceString = String.format("%.2f", balance);
+            newReport += "\n";
+            newReport += "⚖️ *Balance final:* `" + balanceString + "`";
+            newReport += "\n\n";
+
+            newReport += "¡Sigue así y mantén tus finanzas en equilibrio! 🚀";
+            return newReport;
+        }
+    }
+
 }

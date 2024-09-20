@@ -24,6 +24,7 @@ public class UserStatus {
     private final Map<Long, Boolean> isWaitingForDetails;
     private final Map<Long, Boolean> isWaitingForCategory;
     private final Map<Long, Boolean> isWaitingForNewSavingsAmmount;
+    private final Map<Long, Boolean> isWaitingForMonth;
     /**
      * Constructor de la clase UserStatus.
      * Inicializa los Maps como un {@link HashMap}.
@@ -38,6 +39,7 @@ public class UserStatus {
         this.isWaitingForDetails = new HashMap<>();
         this.isWaitingForCategory = new HashMap<>();
         this.isWaitingForNewSavingsAmmount = new HashMap<>();
+        this.isWaitingForMonth = new HashMap<>();
     }
     // Getters
     public boolean getIsWaitingForNewUsername(long userId) {
@@ -76,6 +78,10 @@ public class UserStatus {
         return isWaitingForNewSavingsAmmount.getOrDefault(userId, false);
     }
 
+    public boolean getIsWaitingForMonth(long userId){
+        return isWaitingForMonth.getOrDefault(userId, false);
+    }
+
     // setters
     public void setIsWaitingForNewUsername(long userId, boolean status) {
         isWaitingForNewUsername.put(userId, status);
@@ -110,5 +116,9 @@ public class UserStatus {
 
     public void setIsWaitingForNewSavingsAmmount(long userId, boolean status){
         isWaitingForNewSavingsAmmount.put(userId, status);
+    }
+
+    public void setIsWaitingForMonth(long userId, boolean status){
+        isWaitingForMonth.put(userId, status);
     }
 }
