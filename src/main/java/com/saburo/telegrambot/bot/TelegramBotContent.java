@@ -19,6 +19,7 @@ public class TelegramBotContent {
                         2. /nuevoegreso - *🧾 Nuevo Egreso*
                         3. /nuevoahorro - *🏦 Nuevo Ahorro*
                         4. /reportes - *📊 Reportes*
+                        5. /perfil - *👤 Perfil*
                         """;
 
         public static final String SUB_MENU_REPORTES = """
@@ -270,6 +271,21 @@ public class TelegramBotContent {
                                 """, stringDate, stringDetails, ammount, typeOfMovement, category);
         }
 
+        public static String USER_PROFILE(String name, double balance, int totalMovements, String lastActivityDate) {
+                return String.format("""
+                                🤖 *Perfil del Usuario*
+            
+                                👤 Nombre: %s
+                                💼 Saldo actual: `%.2f`
+                                📊 Total de movimientos: %d
+                                🕒 Última actividad: %s
+            
+                                ¡Sigue gestionando tus finanzas con éxito!
+
+                                Si quieres cambiar tu perfil, haz click en /modificarperfil
+                                """, name, balance, totalMovements, lastActivityDate);
+            }
+            
         public static final String ERROR_MESSAGE = """
                         🤖 Tienes un error en tu monto. 🚫
 
