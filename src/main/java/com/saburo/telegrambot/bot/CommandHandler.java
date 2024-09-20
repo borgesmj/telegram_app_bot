@@ -7,6 +7,8 @@ import com.saburo.telegrambot.user.UserReports;
 import com.saburo.telegrambot.user.UserStatus;
 
 import static com.saburo.telegrambot.bot.TelegramBotContent.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Clase que recibe un mensaje de @link TelegramBot si es un comando con /
@@ -23,7 +25,7 @@ public class CommandHandler {
     private DatabaseCommands databaseCommands;
     private UserProfile userProfile;
     private UserStatus userStatus;
-    //private ErrorsHandler errorsHandler;
+    // private ErrorsHandler errorsHandler;
     private UserReports userReports;
 
     public CommandHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands,
@@ -33,9 +35,9 @@ public class CommandHandler {
         this.databaseCommands = databaseCommands;
         this.userProfile = userProfile;
         this.userStatus = userStatus;
-        //this.errorsHandler = errorsHandler;
+        // this.errorsHandler = errorsHandler;
         this.userReports = userReports;
-        
+
     }
 
     /**
@@ -161,17 +163,31 @@ public class CommandHandler {
                 String newUserReport = userReports.getBalanceGeneral(newMessage.getFrom().getId());
                 messageSender.sendMessage(newMessage, newUserReport);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
-            break;
+                break;
             case "/ultimosmovimientos":
                 String lastMovements = userReports.getUltimosMovimientos(newMessage.getFrom().getId());
                 messageSender.sendMessage(newMessage, lastMovements);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
-            break;
+                break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
                  */
-                if (userStatus.getIsWaitingForCategory(newMessage.getFrom().getId())) {
+                if (newMessage.getText().startsWith("/ver")) {
+                    String parts = newMessage.getText().replace("/ver", "");
+                    Pattern pattern = Pattern.compile("0+(?=[1-9])");
+                    Matcher matcher = pattern.matcher(parts);
+                    String stringId = "";
+                    int movementId = 0;
+                    while (matcher.find()) {
+                        stringId = parts.replaceFirst(matcher.group(), "");
+                    }
+                    movementId = Integer.parseInt(stringId);
+                    String movementReport = userReports.getMovementById(movementId);
+                    messageSender.sendMessage(newMessage, movementReport);
+                    messageSender.sendMessage(newMessage, USER_MSG_21);
+                    messageSender.sendMessage(newMessage, USER_MSG_22);
+                } else if (userStatus.getIsWaitingForCategory(newMessage.getFrom().getId())) {
                     userProfile.setCategory(newMessage.getText().replace("/", "").trim().toUpperCase());
                     databaseCommands.saveNewMovement(
                             newMessage.getFrom().getId(),

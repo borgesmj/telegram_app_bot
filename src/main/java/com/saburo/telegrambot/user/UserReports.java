@@ -57,4 +57,12 @@ public class UserReports {
         newReport += TelegramBotContent.USER_REPORT_2(movimientos);
         return newReport;
     }
+
+    public String getMovementById(int movementId){
+        String newReport = "";
+        String movimiento = databaseCommands.getMovementById(movementId);
+        String[] parts = movimiento.split("\\+");
+        newReport = TelegramBotContent.USER_REPORT_3(parts[2], parts[0], parts[1], parts[3], parts[4]);
+        return newReport;
+    }
 }

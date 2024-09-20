@@ -382,4 +382,24 @@ public class DatabaseCommands {
         }
         return movimientos;
     }
+
+    public String getMovementById(int movementId){
+        String SqlQueryString = "SELECT MOV.*, CAT.NOMBRE  FROM MOVIMIENTOS MOV LEFT JOIN CATEGORIAS CAT ON MOV.CATEGORIA_ID = CAT.ID WHERE MOV.ID = ?";
+        try (PreparedStatement getMovementByIdStmt = connection.prepareStatement(SqlQueryString)){
+            getMovementByIdStmt.setInt(1, movementId);
+            ResultSet rs = getMovementByIdStmt.executeQuery();
+            if (rs.next()) {
+                String detalles = rs.getString("DETALLES");
+                String monto = String.valueOf(rs.getDouble("MONTO"));
+                String tipo = rs.getString("TIPO_MOVIMIENTO");
+                String categoria = rs.getString("NOMBRE");
+                String date = rs.getString("CREATED_AT");
+                return detalles + "+" + monto + "+" + date + "+" + tipo + "+" + categoria;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return "";
+    }
 }   

@@ -1,5 +1,8 @@
 package com.saburo.telegrambot.bot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /***
@@ -234,13 +237,17 @@ public class TelegramBotContent {
 
                         Movimiento guardado con exito!!!
                         """;
-        public static final String USER_MSG_21 ="""
+        public static final String USER_MSG_21 = """
                         Presiona /menu para regresar al menu pricipal
                         """;
+        public static final String USER_MSG_22 = """
+                        Para regresar a la lista de movimientos, presiona /ultimosmovimientos
+                        """;
+
         public static String USER_REPORT_1(String ingresos, String egresos, String ahorros, String balance) {
                 return String.format("""
                                 🤖:
-                                
+
                                 *Reporte General*
 
                                 Este es tu reporte general hasta la fecha:
@@ -257,7 +264,7 @@ public class TelegramBotContent {
         public static String USER_REPORT_2(List<String> movimientos) {
                 StringBuilder report = new StringBuilder("""
                                 🤖:
-                                
+
                                 *Aquí tienes tus últimos 10 movimientos*
 
                                 """);
@@ -268,27 +275,40 @@ public class TelegramBotContent {
                         report.append("/ver");
                         report.append(parts[0]);
                         report.append(" ");
-                        String emoji = parts[3].equals("INGRESO") ? "⬆️" : "⬇️"; // Selecciona el emoji según el tipo de movimiento
+                        String emoji = parts[3].equals("INGRESO") ? "⬆️" : "⬇️"; // Selecciona el emoji según el tipo de
+                                                                                 // movimiento
                         report.append(emoji).append(" ");
                         report.append(parts[1]);
-                        report.append(" " );
+                        report.append(" ");
                         report.append("\n");
-                        
+
                 }
 
-                // Itera sobre la lista de movimientos y tipos para agregar flecha dependiendo
-                // del tipo
-                /*
-                 * 
-                 for (int i = 0; i < movimientos.size(); i++) {
-                         String emoji = tipo.equals("INGRESO") ? "⬆️" : "⬇️"; // Selecciona el emoji según el tipo de
-                         // movimiento
-                         report.append(i + 1).append(". ").append(emoji).append(" ").append(movimientos.get(i))
-                         .append("\n");
-                        }
-                        */
-
                 return report.toString();
+        }
+
+        public static String USER_REPORT_3(String stringDate, String stringDetails, String ammount,
+                        String typeOfMovement, String category) {
+                try {
+                        SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date date = sdfSource.parse(stringDate);
+                        SimpleDateFormat sdfDestination = new SimpleDateFormat("dd/MM/yyyy");
+                        stringDate = sdfDestination.format(date);
+                } catch (ParseException e) {
+                        System.out.println("Parse Exception : " + e);
+                }
+                return String.format("""
+                                🤖:
+
+                                Movimiento del dia %s
+
+                                *%s*
+                                Monto: `%s`
+
+                                %s
+
+                                Bajo la categoría: %s
+                                """, stringDate, stringDetails, ammount, typeOfMovement, category);
         }
 
         public static final String ERROR_MESSAGE = """
