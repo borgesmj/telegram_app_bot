@@ -106,6 +106,7 @@ public class CommandHandler {
                     userProfile.setUsername(username);
                     databaseCommands.updateLastLogin(newMessage.getFrom().getId());
                     messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_7(username));
+                    messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
                 }
                 break;
             // comando por el cual el usario indica que quiere dejar el nombre de usuario
