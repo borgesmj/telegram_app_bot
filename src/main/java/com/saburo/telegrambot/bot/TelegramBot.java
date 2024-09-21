@@ -8,6 +8,8 @@ import com.saburo.telegrambot.database.CreateTablesCommands;
 import com.saburo.telegrambot.database.DatabaseCommands;
 import com.saburo.telegrambot.database.DatabaseConnection;
 import com.saburo.telegrambot.user.UserStatus;
+import com.saburo.telegrambot.user.UserProfile;
+import com.saburo.telegrambot.user.UserReports;
 
 import java.sql.Connection;
 
@@ -30,6 +32,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final DatabaseCommands databaseCommands;
     // Instancia de UserStatus
     private final UserStatus userStatus;
+    // Instancia de UserProfile
+    private final UserProfile userProfile;
+    // Instancia de manejo de errores
+    private final ErrorsHandler errorsHandler;
+    // Instancia de manejo de reportes
+    private final UserReports userReports;
 
     /**
      * Constructor de la clase TelegramBot.
@@ -41,7 +49,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.connection = DatabaseConnection.getConnection();
         // Crea las tablas necesarias en la base de datos usando CreateTablesCommands
         CreateTablesCommands createTablesCommands = new CreateTablesCommands(connection);
-        createTablesCommands.setTimeZone();
         createTablesCommands.createTablesCommand();
         // Inicializa el MessageSender con la instancia actual del bot
         messageSender = new MessageSender(this);
@@ -49,6 +56,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         databaseCommands = new DatabaseCommands(connection);
         // Iniciliza userStatus
         userStatus = new UserStatus();
+        // Inicializa userProfile
+        userProfile = new UserProfile();
+        // Inicizaliza errorsHandler
+        errorsHandler = new ErrorsHandler();
+        // Inicializamos userReports
+        userReports = new UserReports(connection);
     }
 
     /**
@@ -86,11 +99,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (message.hasText()){
             // Si el texto del mensaje comienza con "/", se considera un comando
             if (message.getText().startsWith("/")) {
-                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus);
+                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler, userReports);
                 commandHandler.handleCommand();
             } else {
                 // Si el texto del mensaje no comienza con "/", se considera un mensaje normal
-                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus);
+                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler, userReports);
                 messageHandler.handleMessage();
             }
         } else{

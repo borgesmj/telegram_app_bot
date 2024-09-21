@@ -1,136 +1,297 @@
 package com.saburo.telegrambot.bot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 /***
  * TelegramBotContent tiene los mensajes que se enviarán al usuario
  * Algunos son mensajes estaticos otros son metodos que retornan un String
  * 
  */
 public class TelegramBotContent {
-        /**
-         * Mensaje de bienvenida al usuario nuevo
-         */
-        public static final String USER_MSG_1 = """
+
+        public static final String MENU_PRINCIPAL = """
+                        *✨ MENU PRINCIPAL ✨*
+
+                        1. /nuevoingreso - *💵 Nuevo Ingreso*
+                        2. /nuevoegreso - *🧾 Nuevo Egreso*
+                        3. /nuevoahorro - *🏦 Nuevo Ahorro*
+                        4. /reportes - *📊 Reportes*
+                        5. /perfil - *👤 Perfil*
+                        """;
+
+        public static final String SUB_MENU_REPORTES = """
+                        *📊 MENU DE REPORTES 📊*
+
+                        1. /balancegeneral - *📈 Balance General*
+                        2. /ultimosmovimientos - *📜 Últimos Movimientos*
+                        3. /reportemensual - *📅 Reporte Mensual*
+                        4. /menu - *🚪 Regresar al menú principal*
+                        """;
+
+        public static final String SUB_MENU_MESES = """
                         🤖:
+                        *Por favor selecciona el mes*
 
-                        *HOLA*, veo que eres nuevo usuario
 
-                        Configuremos tu perfil.
-                            """;
+                        1. /enero
+                        2. /febrero
+                        3. /marzo
+                        4. /abril
+                        5. /mayo
+                        6. /junio
+                        7. /julio
+                        8. /agosto
+                        9. /septiembre
+                        10. /octubre
+                        11. /noviembre
+                        12. /diciembre
+                        """;
+        public static final String USER_MSG_1 = """
+                        🤖 ¡Hola! 👋
 
-        /**
-         * Mensaje d ep´regunta si el usuario quiere dejar el nombre de usuario como lo
-         * tiene en su perfil de telegram o cambiarlo
-         */
+                        *Bienvenido, nuevo usuario* 🎉
+
+                        Configuremos tu perfil. 🛠️
+                        """;
+
         public static String USER_MSG_2(String username) {
                 return String.format("""
-                                🤖:
+                                🤖 Veo que te llamas *%s* 😊
 
-                                Veo que te llamas *%s*
+                                ¿Quieres dejarlo así o prefieres cambiarlo? 🤔
 
-                                ¿Quieres dejarlo asi? ¿O lo cambiamos?
-
-                                /estabienasi
-
-                                /cambiarlo
+                                /estabienasi - *Sí, está bien así* 👍
+                                /cambiarlo - *Quiero cambiarlo* 🔄
                                 """, username);
         }
 
-        /**
-         * Si el usuario no tiene nombre de usaurio en telegram, el bot le solicita uno
-         */
         public static final String USER_MSG_3 = """
-                        🤖:
+                        🤖 No tienes nombre de usuario. 🆕
 
-                        No tienes nombre de usuario, configuremos uno.
+                        ¡Vamos a configurar uno! 📝
 
-                        Escribe aqui abajo el nombre de usuario nuevo
+                        Escribe aquí abajo tu nuevo nombre de usuario:
                         """;
-        /**
-         * Si el usuario quiere cambiar el nombre de usuario
-         * 
-         */
+
         public static final String USER_MSG_4 = """
-                        🤖:
-
-                        Aqui debajo, escribe como quieres que te llame ahora.
+                        🤖 Escribe cómo te gustaría que te llame. ✍️
                         """;
-        /**
-         * Si el nombre de usuario ya ha sido utilizado
-         */
+
         public static final String USER_MSG_5 = """
-                        🤖:
+                        🤖 Lo siento, ese nombre de usuario ya está en uso. 😔
 
-                        Disculpa, ese nombre de usuario ya ha sido utilizado. intenta con otro.
-                                """;
+                        Intenta con otro, ¡seguro encontramos uno perfecto! 🌟
+                        """;
 
-        /**
-         * Si el nombre de usuario es valido y fué guardado con exito
-         */
         public static String USER_MSG_6(String username) {
                 return String.format("""
-                                🤖:
+                                🤖 ¡Excelente! ✅
 
-                                ✅ Excelente.
-
-                                Tu nombre fué guardado con éxito, ahora te llamaré *%s*
+                                Tu nombre fue guardado con éxito, ahora te llamaré *%s* 🎊
                                 """, username);
         }
 
-        /**
-         * Mensaje de bienvenida para cuando el usuario entre con el comando /start y ya
-         * se encuentre guardado en la base de datos
-         */
         public static String USER_MSG_7(String username) {
                 return String.format("""
-                                🤖:
+                                🤖 Bienvenido de vuelta, *%s*! 🎉
 
-                                Bienvenido de vuelta, *%s*
+                                ¡Estamos listos para comenzar! 🚀
                                 """, username);
         }
 
         public static final String USER_MSG_8 = """
-                        🤖:
+                        🤖 Ahora configuraremos tu capital inicial. 💰
 
-                        Ahora configuraremos tu capital inicial.
-
-                        Escribe en un numero, sin puntos ni comas, el capital que tienes actualmente, o escribe solo un 0.
+                        Escribe un número, sin puntos ni comas. Si es 0, ¡también está bien! 😊
                         """;
 
         public static final String USER_MSG_9 = """
+                        🤖 ¡Genial! ✅
 
-                        🤖:
+                        Ahora, configura tus ahorros. 💵
 
-                        ✅ Genial.
-
-                        Ahora vamos a configurar tus ahorros. Escribe en un mensaje, sin comas ni puntos, el monto que quieras guardar en tus cuentas, o solo escribe 0.
-
-                        Este paso es para mantener las cuentas en orden, ya que para los proximos ahorros que guardes, se restarán de tu capital.
-
+                        Escribe el monto que deseas guardar, o solo 0 si prefieres. 😊
                         """;
+
         public static final String USER_MSG_10 = """
-                        
-                        🤖:
+                        🤖 ¡Excelente! 🙌
 
-                        ✅ Excelente. Tus ahorros fueron guardados
+                        Ahora configuraremos las categorías de tus movimientos. 🏷️
 
-                        Ahora configuraremos las categorias de tus movimientos.
+                        Comencemos con las de los *INGRESOS*. 💵
 
-                        Comencemos con las de los INGRESO.
-
-                        Vas a escribir las categorias separadas por una coma.
-
-                        Por ejemplo: salario, freelance, otros ingresos, etc.
-
+                        Escribe las categorías separadas por comas, por ejemplo: salario, freelance, otros ingresos, etc.
                         """;
+
         public static final String USER_MSG_11 = """
-                        🤖:
+                        🤖 ¡Qué bien estamos trabajando juntos! 🤝
 
-                        ✅ Que bien estamos trabajando tu y yo.
+                        Vamos a configurar ahora las categorías de los *EGRESOS*. 🧾
 
-                        VAmos a configurar ahora las categorias de los egresos.
+                        Igual que antes, escribe todas separadas por comas. 😊
+                        """;
 
-                        Igual que en el paso anterior, escribe en un mismo mensaje todas separadas por una coma.
+        public static final String USER_MSG_12 = """
+                        🤖 🎉 ¡GENIAL!
 
-                        Por ejemplo: comida, entretenimiento, renta, otros etc.
+                        Tu perfil fue guardado exitosamente. Ahora puedes empezar a registrar tus movimientos. 📝
+
+                        Puedes hacerlo desde el /menu principal. 📋
+                        """;
+
+        public static final String USER_MSG_13 = """
+                        🤖 *GUARDEMOS UN NUEVO INGRESO* 💵
+
+                        `Ingresa el monto` 💰
+
+                        Escribe sin comas ni puntos.
+
+                        Si quieres cancelar, haz clic en /menu 🚪
+                        """;
+
+        public static final String USER_MSG_14 = """
+                        🤖 *GUARDEMOS UN NUEVO EGRESO* 🧾
+
+                        `Ingresa el monto` 💸
+
+                        Escribe sin comas ni puntos.
+
+                        Si quieres cancelar, haz clic en /menu 🚪
+                        """;
+
+        public static final String USER_MSG_15 = """
+                        🤖 Escribe el `nombre de la transacción`. ✍️
+
+                        Si quieres cancelar, haz clic en /menu 🚪
+                        """;
+
+        public static String USER_MSG_16(List<String> categorias) {
+                StringBuilder message = new StringBuilder("🤖\n\nℹ️ Selecciona la categoría:\n\n");
+                for (String category : categorias) {
+                        message.append("/").append(category).append("\n");
+                }
+                message.append("\nPara cancelar, haz clic en /menu 🚪");
+                return message.toString();
+        }
+
+        public static final String USER_MSG_17 = """
+                        🤖 No tienes categorías guardadas. 🗂️
+
+                        Guarda tu primera categoría en /nuevacategoria ✨
+                        """;
+
+        public static final String USER_MSG_18 = """
+                        🤖 ¡Movimiento guardado con éxito! 🎉
+                        """;
+
+        public static final String USER_MSG_19 = """
+                        🤖 *GUARDEMOS UN NUEVO AHORRO* 🏦
+
+                        `Ingresa el monto` 💰
+
+                        Escribe sin comas. Si necesitas decimales, usa un punto. Ej: 120350.30
+
+                        Si quieres cancelar, haz clic en /menu 🚪
+                        """;
+
+        public static final String USER_MSG_20 = """
+                        🤖 ¡Movimiento guardado con éxito! 🎉
+                        """;
+
+        public static final String USER_MSG_21 = """
+                        Presiona /menu para regresar al menú principal. 📋
+                        """;
+
+        public static final String USER_MSG_22 = """
+                        Para regresar a la lista de movimientos, presiona /ultimosmovimientos. 📜
+                        """;
+        public static final String USER_MSG_23 = """
+                        O presiona /reportemensual para volver al listado de los meses.
+                        """;
+
+        public static String USER_REPORT_1(String ingresos, String egresos, String ahorros, String balance) {
+                return String.format("""
+                                🤖 *Reporte General* 📊
+
+                                Este es tu reporte general hasta la fecha:
+
+                                Ingresos: `%s` 💵
+                                Egresos: `%s` 🧾
+
+                                Balance: `%s` ⚖️
+
+                                Ahorros: `%s` 🏦
+                                """, ingresos, egresos, balance, ahorros);
+        }
+
+        public static String USER_REPORT_2(List<String> movimientos) {
+                StringBuilder report = new StringBuilder("""
+                                🤖 *Aquí tienes tus últimos 10 movimientos* 📜
+
+                                """);
+                for (int i = 0; i < movimientos.size(); i++) {
+                        String movimiento = movimientos.get(i);
+                        String[] parts = movimiento.split("\\+");
+                        report.append("/ver");
+                        report.append(parts[0]);
+                        report.append(" ");
+                        String emoji = parts[3].equals("INGRESO") ? "⬆️" : "⬇️";
+                        report.append(emoji).append(" ");
+                        report.append(parts[1]);
+                        report.append(" ");
+                        report.append("\n");
+                }
+
+                return report.toString();
+        }
+
+        public static String USER_REPORT_3(String stringDate, String stringDetails, String ammount,
+                        String typeOfMovement, String category) {
+                try {
+                        SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date date = sdfSource.parse(stringDate);
+                        SimpleDateFormat sdfDestination = new SimpleDateFormat("dd/MM/yyyy");
+                        stringDate = sdfDestination.format(date);
+                } catch (ParseException e) {
+                        System.out.println("Parse Exception: " + e);
+                }
+                return String.format("""
+                                🤖:
+
+                                Movimiento del día *%s* 🗓️
+
+                                *Detalles: %s* ✨
+                                Monto: `%s` 💰
+
+                                Tipo: %s
+                                Bajo la categoría: %s 🏷️
+                                """, stringDate, stringDetails, ammount, typeOfMovement, category);
+        }
+
+        public static String USER_PROFILE(String name, double balance, int totalMovements, String lastActivityDate, double ahorros) {
+                return String.format("""
+                                🤖 *Perfil del Usuario*
+            
+                                👤 Nombre: %s
+                                💼 Saldo actual: `%.2f`
+                                💰 Ahorros: `%.2f`
+                                📊 Total de movimientos: %d
+                                🕒 Última actividad: %s
+            
+                                ¡Sigue gestionando tus finanzas con éxito!
+
+                                Si quieres cambiar tu perfil, haz click en /editarperfil
+                                """, name, balance, ahorros, totalMovements, lastActivityDate);
+            }
+            
+        public static final String ERROR_MESSAGE = """
+                        🤖 Tienes un error en tu monto. 🚫
+
+                        Por favor incluye solo números. 📝
+
+                        Si necesitas que tenga decimales, escríbelo con un punto. Ejemplo: 120000.30
                         """;
 }

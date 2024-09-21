@@ -1,4 +1,5 @@
 package com.saburo.telegrambot.user;
+
 /**
  * Esta clase representa el perfil de usuario en la aplicación de Telegram.
  * Incluye información como el ID de usuario de Telegram, nombre de usuario,
@@ -13,6 +14,12 @@ public class UserProfile {
     private String username;
     // Metodo para cambiar los montos instroducidos por el usuario a numero
     private double doubleAmmount;
+    // Detalles de cada movimientos
+    private String movementDetails;
+    // Categoria del movimiento
+    private String category;
+    // Mes del año
+    private int monthInt;
     /**
      * Estos parametros de abajo son para usarlos en un futuro
      */
@@ -31,12 +38,15 @@ public class UserProfile {
      * Constructor que crea un perfil de usuario básico con un ID de Telegram y
      * nombre de usuario.
      * 
-     * @param userId   ID único del usuario en Telegram.
+     * @param userId ID único del usuario en Telegram.
      */
-    public UserProfile(long userId) {
-        this.telegramUserID = userId;
+    public UserProfile() {
+        this.telegramUserID = 0;
         this.username = "";
         this.doubleAmmount = 0;
+        this.movementDetails = "";
+        this.category = "";
+        this.monthInt = 0;
         /**
          * 
          * this.is_premium = false; // Valor predeterminado: el usuario no es premium
@@ -68,8 +78,20 @@ public class UserProfile {
         return username;
     }
 
-    public double getAmmount(){
+    public double getAmmount() {
         return doubleAmmount;
+    }
+
+    public String getMovementDetails() {
+        return movementDetails;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public int getMonth() {
+        return monthInt;
     }
 
     // Setters
@@ -77,13 +99,65 @@ public class UserProfile {
         this.username = username;
     }
 
-    public void setAmmount(String userText){
+    public boolean setAmmount(String userText) {
         try {
             doubleAmmount = Double.parseDouble(userText);
         } catch (NumberFormatException e) {
             System.out.println("Error al convertir el texto a double");
+            return false;
         }
+        return true;
     }
 
+    public void setMovementDetails(String userText) {
+        movementDetails = userText;
+    }
+
+    public void setCategory(String userText) {
+        category = userText;
+    }
+
+    public void setMonth(String monthString) {
+        switch (monthString) {
+            case "enero":
+                monthInt = 1;
+                break;
+            case "febrero":
+                monthInt = 2;
+                break;
+            case "marzo":
+                monthInt = 3;
+                break;
+            case "abril":
+                monthInt = 4;
+                break;
+            case "mayo":
+                monthInt = 5;
+                break;
+            case "junio":
+                monthInt = 6;
+                break;
+            case "julio":
+                monthInt = 7;
+                break;
+            case "agosto":
+                monthInt = 8;
+                break;
+            case "septiembre":
+                monthInt = 9;
+                break;
+            case "octubre":
+                monthInt = 10;
+                break;
+            case "noviembre":
+                monthInt = 11;
+                break;
+            case "diciembre":
+                monthInt = 12;
+                break;
+            default:
+                break;
+        }
+    }
 
 }

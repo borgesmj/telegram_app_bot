@@ -13,18 +13,6 @@ public class CreateTablesCommands {
     public CreateTablesCommands(Connection connection) {
         this.connection = connection;
     }
-
-    // Cambiar la zona horaria de la base de datos
-    public void setTimeZone() {
-        String setTimeZoneSql = "SET GLOBAL time_zone = '-05:00';"; // Cambia el offset según tu zona horaria
-        try (PreparedStatement setTimeZoneStmt = connection.prepareStatement(setTimeZoneSql)) {
-            setTimeZoneStmt.executeUpdate();
-            System.out.println("Zona horaria establecida correctamente");
-        } catch (SQLException e) {
-            System.out.println("Error al establecer la zona horaria");
-        }
-    }
-
     // Crear tablas
     public void createTablesCommand() {
         // Crear la tabla USERS
@@ -33,7 +21,7 @@ public class CreateTablesCommands {
                     ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     TELEGRAM_ID BIGINT NOT NULL,
                     USERNAME VARCHAR(50) UNIQUE,
-                    CREATED_AT timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    CREATED_AT timestamp NOT NULL,
                     IS_PREMIUM BOOLEAN NOT NULL DEFAULT FALSE,
                     EMAIL VARCHAR(50),
                     HASHED_PWD VARCHAR(200),
@@ -52,25 +40,14 @@ public class CreateTablesCommands {
                     ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     DETALLES VARCHAR(250) NOT NULL DEFAULT 'CAPITAL INICIAL',
                     MONTO DOUBLE NOT NULL,
-                    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CREATED_AT TIMESTAMP,
                     USER_ID INT NOT NULL,
                     CATEGORIA_ID INT,
-                    TIPO_MOVIMIENTO ENUM('INGRESO', 'EGRESO'),
+                    TIPO_MOVIMIENTO ENUM('INGRESO', 'EGRESO', 'AHORROS'),
                     FOREIGN KEY (USER_ID) REFERENCES USERS(ID),
                     FOREIGN KEY (CATEGORIA_ID) REFERENCES CATEGORIAS(ID)
                     );
                 """;
-        // Crear la tabla de ahorros
-        String createAhorrosTable = """
-                    CREATE TABLE IF NOT EXISTS AHORROS (
-                    ID INT AUTO_INCREMENT PRIMARY KEY,
-                    MONTO DOUBLE NOT NULL,
-                    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    USER_ID INT NOT NULL,
-                    FOREIGN KEY (USER_ID) REFERENCES USERS(ID)
-                    );
-                """;
-
         // Crear la tabla CATEGORIAS
         String createCategoriasTable = """
                     CREATE TABLE IF NOT EXISTS CATEGORIAS (
@@ -88,7 +65,7 @@ public class CreateTablesCommands {
                     ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     DETALLES VARCHAR(50),
                     MONTO DOUBLE NOT NULL,
-                    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                    CREATED_AT TIMESTAMP NOT NULL,
                     DIA_DEL_MES INT,
                     CATEGORIA_ID INT NOT NULL,
                     USER_ID INT NOT NULL,
@@ -100,7 +77,6 @@ public class CreateTablesCommands {
         try (
                 // Preparar las sentencias de creación de tablas
                 PreparedStatement createUsersStmt = connection.prepareStatement(createUsersTable);
-                PreparedStatement createAhorrosStmt = connection.prepareStatement(createAhorrosTable);
                 PreparedStatement createCategoriasStmt = connection.prepareStatement(createCategoriasTable);
                 PreparedStatement createMovimientosStmt = connection.prepareStatement(createMovimientosTable);
                 PreparedStatement createGastosFijosStmt = connection.prepareStatement(createGastosFijosTable);
@@ -109,7 +85,6 @@ public class CreateTablesCommands {
             createUsersStmt.executeUpdate();
             createCategoriasStmt.executeUpdate();
             createMovimientosStmt.executeUpdate();
-            createAhorrosStmt.executeUpdate();
             System.out.println("Tablas creadas correctamente");
         } catch (SQLException e) {
             System.out.println("Error al crear las tablas");
