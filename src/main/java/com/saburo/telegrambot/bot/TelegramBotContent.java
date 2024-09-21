@@ -271,19 +271,20 @@ public class TelegramBotContent {
                                 """, stringDate, stringDetails, ammount, typeOfMovement, category);
         }
 
-        public static String USER_PROFILE(String name, double balance, int totalMovements, String lastActivityDate) {
+        public static String USER_PROFILE(String name, double balance, int totalMovements, String lastActivityDate, double ahorros) {
                 return String.format("""
                                 🤖 *Perfil del Usuario*
             
                                 👤 Nombre: %s
                                 💼 Saldo actual: `%.2f`
+                                💰 Ahorros: `%.2f`
                                 📊 Total de movimientos: %d
                                 🕒 Última actividad: %s
             
                                 ¡Sigue gestionando tus finanzas con éxito!
 
-                                Si quieres cambiar tu perfil, haz click en /modificarperfil
-                                """, name, balance, totalMovements, lastActivityDate);
+                                Si quieres cambiar tu perfil, haz click en /editarperfil
+                                """, name, balance, ahorros, totalMovements, lastActivityDate);
             }
             
         public static final String ERROR_MESSAGE = """

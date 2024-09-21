@@ -1,11 +1,12 @@
 package com.saburo.telegrambot.database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -530,5 +531,43 @@ public class DatabaseCommands {
             System.out.println(e);
         }
         return monto;
+    }
+
+    public int getMovementsCount(long userId){
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT COUNT(*) FROM MOVIMIENTOS WHERE USER_ID = ?";
+        int count = 0;
+        try (PreparedStatement getMovementsCountStmt = connection.prepareStatement(SqlQueryString)){
+            getMovementsCountStmt.setInt(1, currentUserId);
+            ResultSet rs = getMovementsCountStmt.executeQuery();
+            if (rs.next()){
+                count = rs.getInt(1);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return count;
+    }
+
+    public LocalDate getLastMovementDate(long userId) {
+        int currentUserId = getCurrentUserId(userId);
+        String sqlQueryString = "SELECT CREATED_AT FROM MOVIMIENTOS WHERE USER_ID = ? ORDER BY CREATED_AT DESC LIMIT 1";
+        LocalDate date = null;
+        try (PreparedStatement getLastMovementDateStmt = connection.prepareStatement(sqlQueryString)) {
+            getLastMovementDateStmt.setInt(1, currentUserId);
+            ResultSet rs = getLastMovementDateStmt.executeQuery();
+            if (rs.next()) {
+                Date sqlDate = rs.getDate(1); // Obtén la fecha como java.sql.Date
+                if (sqlDate != null) {
+                    date = sqlDate.toLocalDate(); // Convierte java.sql.Date a java.time.LocalDate
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener la última fecha de movimiento");
+            System.out.println(e);
+        }
+        return date;
     }
 }   

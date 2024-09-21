@@ -4,6 +4,8 @@ import com.saburo.telegrambot.bot.TelegramBotContent;
 import com.saburo.telegrambot.database.DatabaseCommands;
 
 import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -140,6 +142,21 @@ public class UserReports {
             newReport += "¡Sigue así y mantén tus finanzas en equilibrio! 🚀";
             return newReport;
         }
+    }
+
+    public String getProfile(String username, long userId){
+        String profileString ="";
+        double totalIncome = databaseCommands.getAmmountsByTypeOfMovement(userId, "INGRESO");
+        double totalOutcome = databaseCommands.getAmmountsByTypeOfMovement(userId, "EGRESO");
+        double totalSavings = databaseCommands.getAmmountsByTypeOfMovement(userId, "AHORROS");
+        double getSavingsWoutInitial = databaseCommands.getSavingsWoutInitial(userId);
+        int numberOfMovements = databaseCommands.getMovementsCount(userId);
+        double newBalance = totalIncome - totalOutcome - getSavingsWoutInitial;
+        LocalDate lastDate = databaseCommands.getLastMovementDate(userId); // Cambiar a LocalDate si el método lo permite
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String lastDateString = lastDate.format(formatter);
+        profileString = TelegramBotContent.USER_PROFILE(username, newBalance, numberOfMovements, lastDateString, totalSavings);
+        return profileString;
     }
 
 }

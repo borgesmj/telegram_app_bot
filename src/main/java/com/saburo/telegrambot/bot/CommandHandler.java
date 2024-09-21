@@ -178,6 +178,11 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, SUB_MENU_MESES);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
                 break;
+            case "/perfil":
+                String profileReport = userReports.getProfile(userProfile.getUsername(), newMessage.getFrom().getId());
+                messageSender.sendMessage(newMessage, profileReport);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+            break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
