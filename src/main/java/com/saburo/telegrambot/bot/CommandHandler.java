@@ -183,6 +183,13 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, profileReport);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
             break;
+            case "/editarperfil":
+                messageSender.sendMessage(newMessage, SUB_MENU_EDITAR_PERFIL);
+            break;
+            case "/editarnombre":
+                messageSender.sendMessage(newMessage, USER_MSG_4);
+                userStatus.setIsWaitingForEditUsername(newMessage.getFrom().getId(), true);
+            break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
