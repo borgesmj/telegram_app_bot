@@ -14,8 +14,10 @@ import com.saburo.telegrambot.user.UserReports;
 import java.sql.Connection;
 
 /**
- * Clase que representa el bot de Telegram y maneja la recepción y el procesamiento
- * de actualizaciones (mensajes) enviadas al bot. Extiende {@link TelegramLongPollingBot}
+ * Clase que representa el bot de Telegram y maneja la recepción y el
+ * procesamiento
+ * de actualizaciones (mensajes) enviadas al bot. Extiende
+ * {@link TelegramLongPollingBot}
  * para recibir actualizaciones mediante polling.
  * 
  * Esta clase se encarga de:
@@ -45,7 +47,8 @@ public class TelegramBot extends TelegramLongPollingBot {
      * configura el objeto MessageSender.
      */
     public TelegramBot() {
-        // Inicializa la conexión a la base de datos mediante la clase DatabaseConnection
+        // Inicializa la conexión a la base de datos mediante la clase
+        // DatabaseConnection
         this.connection = DatabaseConnection.getConnection();
         // Crea las tablas necesarias en la base de datos usando CreateTablesCommands
         CreateTablesCommands createTablesCommands = new CreateTablesCommands(connection);
@@ -87,26 +90,36 @@ public class TelegramBot extends TelegramLongPollingBot {
     /**
      * Maneja las actualizaciones (mensajes) recibidas por el bot.
      * 
-     * @param update El objeto Update que contiene la información de la actualización recibida.
+     * @param update El objeto Update que contiene la información de la
+     *               actualización recibida.
      */
     @Override
     public void onUpdateReceived(Update update) {
-        // Crea una instancia de MessageListener para extraer el mensaje del objeto Update
+        // Crea una instancia de MessageListener para extraer el mensaje del objeto
+        // Update
         MessageListener messageListener = new MessageListener();
         var message = messageListener.handlMessage(update);
+        /*
+         * Cambiado el setUsername a extraerlo con cada update
+         * 
+         */
+        String username = databaseCommands.getCurrentUsername(message.getFrom().getId());
+        userProfile.setUsername(username);
 
         // Verifica si el mensaje tiene texto
-        if (message.hasText()){
+        if (message.hasText()) {
             // Si el texto del mensaje comienza con "/", se considera un comando
             if (message.getText().startsWith("/")) {
-                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler, userReports);
+                CommandHandler commandHandler = new CommandHandler(message, messageSender, databaseCommands, userStatus,
+                        userProfile, errorsHandler, userReports);
                 commandHandler.handleCommand();
             } else {
                 // Si el texto del mensaje no comienza con "/", se considera un mensaje normal
-                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus, userProfile, errorsHandler, userReports);
+                MessageHandler messageHandler = new MessageHandler(message, messageSender, databaseCommands, userStatus,
+                        userProfile, errorsHandler, userReports);
                 messageHandler.handleMessage();
             }
-        } else{
+        } else {
             // Imprime un mensaje en caso de que el mensaje recibido no contenga texto
             System.out.println("No hay texto");
         }

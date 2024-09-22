@@ -61,8 +61,6 @@ public class CommandHandler {
         switch (newMessage.getText()) {
             case "/menu":
                 messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
-                username = databaseCommands.getCurrentUsername(newMessage.getFrom().getId());
-                userProfile.setUsername(username);
                 // con la entrada del comando /menu seteamos todos los estados a false, para qeu
                 // el bot no espere ningun texto fuera de un comando
                 userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
