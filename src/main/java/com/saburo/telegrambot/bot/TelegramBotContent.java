@@ -49,6 +49,15 @@ public class TelegramBotContent {
                         11. /noviembre
                         12. /diciembre
                         """;
+        public static final String SUB_MENU_EDITAR_PERFIL = """
+                        🤖:
+                        *Por favor selecciona una opcion*
+
+
+                        1. /editarnombre
+                        2. /editarcategorias
+                        3. /regresar
+                        """;
         public static final String USER_MSG_1 = """
                         🤖 ¡Hola! 👋
 
