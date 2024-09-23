@@ -22,6 +22,8 @@ public class UserProfile {
     private int monthInt;
     // isnewuser
     private boolean isNewUser;
+    //Role
+    private boolean isAdmin;
     /**
      * Estos parametros de abajo son para usarlos en un futuro
      */
@@ -34,7 +36,6 @@ public class UserProfile {
     // Respuesta cifrada de seguridad del usuario (para recuperación de cuenta).
     // private String HASHED_SCTY_AWD;
     // Rol del usuario en la aplicación (por ejemplo, "USER", "ADMIN").
-    // private String role;
 
     /**
      * Constructor que crea un perfil de usuario básico con un ID de Telegram y
@@ -50,6 +51,7 @@ public class UserProfile {
         this.category = "";
         this.monthInt = 0;
         this.isNewUser = false;
+        this.isAdmin = false; // Valor predeterminado: rol de usuario estándar
         /**
          * 
          * this.is_premium = false; // Valor predeterminado: el usuario no es premium
@@ -57,7 +59,6 @@ public class UserProfile {
          * this.HASHED_PWD = ""; // Valor predeterminado: sin contraseña establecida
          * this.HASHED_SCTY_AWD = ""; // Valor predeterminado: sin respuesta de
          * seguridad
-         * this.role = "USER"; // Valor predeterminado: rol de usuario estándar
          */
     }
 
@@ -99,6 +100,10 @@ public class UserProfile {
 
     public boolean getIsNewUser(){
         return isNewUser;
+    }
+
+    public boolean getIsAdmin() {
+        return isAdmin;
     }
 
     // Setters
@@ -173,6 +178,10 @@ public class UserProfile {
 
     public void setIsNewUser(boolean isNewUser){
         this.isNewUser = isNewUser;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
 }

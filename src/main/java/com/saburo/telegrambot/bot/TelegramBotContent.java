@@ -79,6 +79,13 @@ public class TelegramBotContent {
                         3. /menu
 
                                 """;
+        public static final String MENU_ADMIN = """
+                        🤖:
+                        *MENU ADMIN*
+
+                        1. /verusuarios
+                        2. /conteousuarios
+                        """;
         public static final String USER_MSG_1 = """
                         🤖 ¡Hola! 👋
 

@@ -12,6 +12,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.saburo.telegrambot.bot.TelegramBot;
+
 /**
  * DatabaseCommands
  */
@@ -59,12 +61,19 @@ public class DatabaseCommands {
      * @param username
      */
     public String insertNewUser(long userTelegramId, String username) {
-        String SqlQueryString = "INSERT INTO USERS (TELEGRAM_ID, USERNAME, CREATED_AT, LAST_LOGIN) VALUES (?, ?, ?, ?)";
+        String SqlQueryString = "INSERT INTO USERS (TELEGRAM_ID, USERNAME, CREATED_AT, LAST_LOGIN, ROLE) VALUES (?, ?, ?, ?, ?)";
+        String adminTelegramId = TelegramBot.getAdminChatId();
+        String userTelegramIdString =  Long.toString(userTelegramId);
         try (PreparedStatement insertUserStmt = connection.prepareStatement(SqlQueryString)) {
             insertUserStmt.setLong(1, userTelegramId);
             insertUserStmt.setString(2, username.toLowerCase());
             insertUserStmt.setTimestamp(3, getCurrentTimestamp());
             insertUserStmt.setTimestamp(4, getCurrentTimestamp());
+            if (adminTelegramId.equals(userTelegramIdString)){
+                insertUserStmt.setString(5, "ADMIN");
+            } else {
+                insertUserStmt.setString(5, "USER");
+            }
             insertUserStmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error al insertar el usuario");
@@ -586,5 +595,26 @@ public class DatabaseCommands {
             System.out.println(e);
         }
         return count;
+    }
+
+    public boolean getUserIsAdmin(long userId){
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT ROLE FROM USERS WHERE ID = ?";
+        boolean isAdmin = false;
+        try {
+            PreparedStatement getUserIsAdminStmt = connection.prepareStatement(SqlQueryString);
+            getUserIsAdminStmt.setInt(1, currentUserId);
+            ResultSet rs = getUserIsAdminStmt.executeQuery();
+            if (rs.next()){
+                String role = rs.getString(1);
+                if (role.equals("ADMIN")){
+                    isAdmin = true;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("no se puso encontrar role");
+            System.out.println(e);
+        }
+        return isAdmin;
     }
 }   

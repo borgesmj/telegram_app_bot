@@ -26,6 +26,7 @@ public class CommandHandler {
     // private ErrorsHandler errorsHandler;
     private UserReports userReports;
     private String username;
+    private String adminchatId;
 
     public CommandHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands,
             UserStatus userStatus, UserProfile userProfile, ErrorsHandler errorsHandler, UserReports userReports) {
@@ -37,6 +38,7 @@ public class CommandHandler {
         // this.errorsHandler = errorsHandler;
         this.userReports = userReports;
         this.username = "";
+        this.adminchatId = "";
 
     }
 
@@ -223,9 +225,17 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, CREATOR_MESSAGE);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
                 break;
+            case "/menuadmin":
+            adminchatId = TelegramBot.getAdminChatId(); 
+            if (newMessage.getFrom().getId().toString().equals(adminchatId)) {
+                messageSender.sendMessage(newMessage, MENU_ADMIN);
+            } else {
+                messageSender.sendMessage(newMessage, "No tienes permisos para usar este comando");
+            }
+            break;
             case "/conteousuarios":
-                String chatId = TelegramBot.getAdminChatId();
-                if (newMessage.getFrom().getId().toString().equals(chatId)) {
+                adminchatId = TelegramBot.getAdminChatId(); 
+                if (newMessage.getFrom().getId().toString().equals(adminchatId)) {
                     int usersCount = databaseCommands.usersCount();
                     messageSender.sendMessage(newMessage, "Hay " + usersCount + " usuarios registrados");
 
