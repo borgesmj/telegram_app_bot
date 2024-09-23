@@ -20,6 +20,8 @@ public class UserProfile {
     private String category;
     // Mes del año
     private int monthInt;
+    // isnewuser
+    private boolean isNewUser;
     /**
      * Estos parametros de abajo son para usarlos en un futuro
      */
@@ -47,6 +49,7 @@ public class UserProfile {
         this.movementDetails = "";
         this.category = "";
         this.monthInt = 0;
+        this.isNewUser = false;
         /**
          * 
          * this.is_premium = false; // Valor predeterminado: el usuario no es premium
@@ -92,6 +95,10 @@ public class UserProfile {
 
     public int getMonth() {
         return monthInt;
+    }
+
+    public boolean getIsNewUser(){
+        return isNewUser;
     }
 
     // Setters
@@ -158,6 +165,14 @@ public class UserProfile {
             default:
                 break;
         }
+    }
+
+    public void setTelegramUserID(long userId){
+        this.telegramUserID = userId;
+    }
+
+    public void setIsNewUser(boolean isNewUser){
+        this.isNewUser = isNewUser;
     }
 
 }

@@ -85,7 +85,6 @@ public class CommandHandler {
                  * - Si ya existe el usuario, envía un mensaje indicando que el usuario ya está
                  * registrado.
                  */
-                boolean isNewUser = databaseCommands.checkUserId(newMessage.getFrom().getId());
                 /**
                  * Verifica que no haya usuario registrado en la base de datos ejecutanto el
                  * metodo checkUserId en @link DatabaseCommands
@@ -93,10 +92,13 @@ public class CommandHandler {
                  * @return true o false
                  * 
                  */
-                username = newMessage.getFrom().getUserName();
+                
+                boolean isNewUser = userProfile.getIsNewUser();
                 if (isNewUser) {
                     messageSender.sendMessage(newMessage, USER_MSG_1);
-                    databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getFrom().getUserName());
+                    userProfile.setUsername(newMessage.getFrom().getUserName());
+                    userProfile.setTelegramUserID(newMessage.getFrom().getId());
+                    username = userProfile.getUsername();
                     if (username != null) {
                         messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_2(username));
                     } else {
@@ -104,7 +106,7 @@ public class CommandHandler {
                         userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), true);
                     }
                 } else {
-                    username = databaseCommands.getCurrentUsername(newMessage.getFrom().getId());
+                    username = userProfile.getUsername();
                     databaseCommands.updateLastLogin(newMessage.getFrom().getId());
                     messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_7(username));
                     messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
@@ -113,8 +115,9 @@ public class CommandHandler {
             // comando por el cual el usario indica que quiere dejar el nombre de usuario
             // como lo tiene en su perfil de telegram
             case "/estabienasi":
-                userProfile.setUsername(username);
-                databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getFrom().getUserName());
+                userProfile.setUsername(newMessage.getFrom().getUserName());
+                userProfile.setTelegramUserID(newMessage.getFrom().getId());
+                databaseCommands.insertNewUser(userProfile.getTelegramUserID(), userProfile.getUsername());
                 messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_6(userProfile.getUsername()));
                 userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), true);
                 messageSender.sendMessage(newMessage, USER_MSG_8);

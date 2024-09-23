@@ -56,7 +56,7 @@ public class MessageHandler {
              */
 
             // inserta el nuevo nombre de usuario en la base de datos
-            String errorMessage = databaseCommands.updateUsername(newMessage.getFrom().getId(), newMessage.getText());
+            String errorMessage = databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getText());
             // si el nombre de usuario no se encuentra en la base de datos, el metodo
             // retorna "", de lo contrario, retorna un mensaje que se enviará al usuario y
             // mantiene el estado de isWaitingForNewUsername en true, hasta que coloque un
@@ -64,6 +64,7 @@ public class MessageHandler {
             if (errorMessage != "") {
                 messageSender.sendMessage(newMessage, USER_MSG_5);
             } else {
+                userProfile.setUsername(newMessage.getText());
                 userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), false);
                 messageSender.sendMessage(newMessage, USER_MSG_6(newMessage.getText()));
                 messageSender.sendMessage(newMessage, USER_MSG_8);
@@ -167,6 +168,7 @@ public class MessageHandler {
             if (errorMessage != "") {
                 messageSender.sendMessage(newMessage, USER_MSG_5);
             } else {
+                userProfile.setUsername(newMessage.getText());
                 userStatus.setIsWaitingForEditUsername(newMessage.getFrom().getId(), false);
                 messageSender.sendMessage(newMessage, USER_MSG_6(newMessage.getText()));
                 messageSender.sendMessage(newMessage, USER_MSG_21);
