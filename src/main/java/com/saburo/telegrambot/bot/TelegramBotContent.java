@@ -20,6 +20,7 @@ public class TelegramBotContent {
                         3. /nuevoahorro - *🏦 Nuevo Ahorro*
                         4. /reportes - *📊 Reportes*
                         5. /perfil - *👤 Perfil*
+                        6. /donar - *💰 Apoya el proyecto*
                         """;
 
         public static final String SUB_MENU_REPORTES = """
@@ -344,5 +345,14 @@ public class TelegramBotContent {
                         Por favor incluye solo números. 📝
 
                         Si necesitas que tenga decimales, escríbelo con un punto. Ejemplo: 120000.30
+                        """;
+        public static final String DONATE_MESSAGE = """
+                        🤖 ¡Gracias por querer apoyar el proyecto!
+
+                        Con tu donacion nos ayudas a crecer este proyecto y crear muchos mas.
+
+                        Para donar puedes entrar al siguiente [enlace](https://buymeacoffee.com/borgesmj19)
+
+
                         """;
 }

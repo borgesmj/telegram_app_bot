@@ -36,7 +36,8 @@ public class MessageSender {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setText(text);
-        sendMessage.setParseMode("Markdown");
+        sendMessage.enableMarkdown(true);
+        sendMessage.disableWebPagePreview();
 
         // Intentamos enviar el mensaje
         try {
