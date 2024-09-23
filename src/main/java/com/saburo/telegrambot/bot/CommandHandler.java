@@ -188,6 +188,20 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, USER_MSG_4);
                 userStatus.setIsWaitingForEditUsername(newMessage.getFrom().getId(), true);
             break;
+            case "/editarcategorias":
+            messageSender.sendMessage(newMessage, SUB_MENU_EDITAR_CATEGORIAS);
+            break;
+            case "/agregarnueva":
+            messageSender.sendMessage(newMessage, SUB_MENU_INGRESO_EGRESO);
+            userStatus.setIsWaitingForTypeForNewCategorie(newMessage.getFrom().getId(), true);
+            break;
+            case "/vermiscategorias":
+            String[] incomeCategories = databaseCommands.getCategories(newMessage.getFrom().getId(), "INGRESO").toArray(new String[0]);
+            String[] expenseCategories = databaseCommands.getCategories(newMessage.getFrom().getId(), "EGRESO").toArray(new String[0]);
+            String listMessage = TelegramBotContent.categoriesList(incomeCategories, expenseCategories);
+            messageSender.sendMessage(newMessage, listMessage);
+            messageSender.sendMessage(newMessage, USER_MSG_21);
+            break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
@@ -243,7 +257,12 @@ public class CommandHandler {
                     messageSender.sendMessage(newMessage, newReport);
                     messageSender.sendMessage(newMessage, USER_MSG_21);
                     messageSender.sendMessage(newMessage, USER_MSG_23);
-                }
+                } else if (userStatus.getIsWaitingForTypeForNewCategorie(newMessage.getFrom().getId())){
+                    userStatus.setTypeOfMovement(newMessage.getFrom().getId(), newMessage.getText().replace("/", "").trim().toUpperCase());
+                    userStatus.setIsWaitingForTypeForNewCategorie(newMessage.getFrom().getId(), false);
+                    userStatus.setIsWaitingForNewCategoryName(newMessage.getFrom().getId(), true);
+                    messageSender.sendMessage(newMessage, "Dame el nombre de la nueva categoria");
+                }  
                 break;
         }
     }

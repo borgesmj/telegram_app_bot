@@ -58,6 +58,25 @@ public class TelegramBotContent {
                         2. /editarcategorias
                         3. /regresar
                         """;
+
+        public static final String SUB_MENU_EDITAR_CATEGORIAS = """
+                        🤖:
+                        *Por favor selecciona una opcion*
+                        
+                        1. /agregarnueva
+                        2. /vermiscategorias
+                        4. /menu
+                        """;
+
+        public static final String SUB_MENU_INGRESO_EGRESO = """
+                🤖:
+                *Por favor selecciona una opcion*
+
+                1. /Ingreso
+                2. /Egreso
+                3. /menu
+
+                        """;
         public static final String USER_MSG_1 = """
                         🤖 ¡Hola! 👋
 
@@ -280,22 +299,45 @@ public class TelegramBotContent {
                                 """, stringDate, stringDetails, ammount, typeOfMovement, category);
         }
 
-        public static String USER_PROFILE(String name, double balance, int totalMovements, String lastActivityDate, double ahorros) {
+        public static String categoriesList(String[] incomeCategories, String[] outcomeCategories){
+                String listMesage = "";
+                listMesage += """
+                                🤖:
+
+                                Esta es tu lista de categorias:
+
+                                💰 *Ingresos*:
+                                """;
+                for (String incomeCategory : incomeCategories) {
+                        listMesage += incomeCategory + "\n";
+                }
+                listMesage += """
+
+                                🧾 *Egresos*:
+                                """;
+                for (String outcomeCategory : outcomeCategories) {
+                        listMesage += outcomeCategory + "\n";
+                }
+                return listMesage;
+        }
+
+        public static String USER_PROFILE(String name, double balance, int totalMovements, String lastActivityDate,
+                        double ahorros) {
                 return String.format("""
                                 🤖 *Perfil del Usuario*
-            
+
                                 👤 Nombre: %s
                                 💼 Saldo actual: `%.2f`
                                 💰 Ahorros: `%.2f`
                                 📊 Total de movimientos: %d
                                 🕒 Última actividad: %s
-            
+
                                 ¡Sigue gestionando tus finanzas con éxito!
 
                                 Si quieres cambiar tu perfil, haz click en /editarperfil
                                 """, name, balance, ahorros, totalMovements, lastActivityDate);
-            }
-            
+        }
+
         public static final String ERROR_MESSAGE = """
                         🤖 Tienes un error en tu monto. 🚫
 
