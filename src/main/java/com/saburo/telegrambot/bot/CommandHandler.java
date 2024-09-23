@@ -61,8 +61,6 @@ public class CommandHandler {
         switch (newMessage.getText()) {
             case "/menu":
                 messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
-                username = databaseCommands.getCurrentUsername(newMessage.getFrom().getId());
-                userProfile.setUsername(username);
                 // con la entrada del comando /menu seteamos todos los estados a false, para qeu
                 // el bot no espere ningun texto fuera de un comando
                 userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
@@ -182,21 +180,63 @@ public class CommandHandler {
                 String profileReport = userReports.getProfile(userProfile.getUsername(), newMessage.getFrom().getId());
                 messageSender.sendMessage(newMessage, profileReport);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
-            break;
+                break;
             case "/editarperfil":
                 messageSender.sendMessage(newMessage, SUB_MENU_EDITAR_PERFIL);
-            break;
+                break;
             case "/editarnombre":
                 messageSender.sendMessage(newMessage, USER_MSG_4);
                 userStatus.setIsWaitingForEditUsername(newMessage.getFrom().getId(), true);
-            break;
+                break;
+            case "/editarcategorias":
+                messageSender.sendMessage(newMessage, SUB_MENU_EDITAR_CATEGORIAS);
+                break;
+            case "/agregarnueva":
+                messageSender.sendMessage(newMessage, SUB_MENU_INGRESO_EGRESO);
+                userStatus.setIsWaitingForTypeForNewCategorie(newMessage.getFrom().getId(), true);
+                break;
+            case "/vermiscategorias":
+                String[] incomeCategories = databaseCommands.getCategories(newMessage.getFrom().getId(), "INGRESO")
+                        .toArray(new String[0]);
+                String[] expenseCategories = databaseCommands.getCategories(newMessage.getFrom().getId(), "EGRESO")
+                        .toArray(new String[0]);
+                String listMessage = TelegramBotContent.categoriesList(incomeCategories, expenseCategories);
+                messageSender.sendMessage(newMessage, listMessage);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+                break;
+            case "/donar":
+                messageSender.sendMessage(newMessage, DONATE_MESSAGE);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+
+                break;
+            case "/about":
+                messageSender.sendMessage(newMessage, ABOUT_MESSAGE);
+                break;
+            case "/estebot":
+                messageSender.sendMessage(newMessage, THIS_BOT_MESSAGE);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+                break;
+            case "/micreador":
+                messageSender.sendMessage(newMessage, CREATOR_MESSAGE);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+                break;
+            case "/conteousuarios":
+                String chatId = TelegramBot.getAdminChatId();
+                if (newMessage.getFrom().getId().toString().equals(chatId)) {
+                    int usersCount = databaseCommands.usersCount();
+                    messageSender.sendMessage(newMessage, "Hay " + usersCount + " usuarios registrados");
+
+                } else {
+                    messageSender.sendMessage(newMessage, "No tienes permisos para usar este comando");
+                }
+                break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
                  */
                 if (newMessage.getText().startsWith("/ver")) {
                     // Obtener la parte del mensaje que contiene el ID
-                    String parts = newMessage.getText().replace("/ver", "").trim(); 
+                    String parts = newMessage.getText().replace("/ver", "").trim();
                     // Eliminar comando y espacios en blanco
                     // Eliminar ceros iniciales, pero mantener el '0' si es el único carácter
                     String stringId = parts.replaceFirst("^0+(?!$)", "");
@@ -245,6 +285,12 @@ public class CommandHandler {
                     messageSender.sendMessage(newMessage, newReport);
                     messageSender.sendMessage(newMessage, USER_MSG_21);
                     messageSender.sendMessage(newMessage, USER_MSG_23);
+                } else if (userStatus.getIsWaitingForTypeForNewCategorie(newMessage.getFrom().getId())) {
+                    userStatus.setTypeOfMovement(newMessage.getFrom().getId(),
+                            newMessage.getText().replace("/", "").trim().toUpperCase());
+                    userStatus.setIsWaitingForTypeForNewCategorie(newMessage.getFrom().getId(), false);
+                    userStatus.setIsWaitingForNewCategoryName(newMessage.getFrom().getId(), true);
+                    messageSender.sendMessage(newMessage, "Dame el nombre de la nueva categoria");
                 }
                 break;
         }

@@ -20,6 +20,8 @@ public class TelegramBotContent {
                         3. /nuevoahorro - *🏦 Nuevo Ahorro*
                         4. /reportes - *📊 Reportes*
                         5. /perfil - *👤 Perfil*
+                        6. /about - *❓ Acerca de*
+                        7. /donar - *💰 Apoya el proyecto*
                         """;
 
         public static final String SUB_MENU_REPORTES = """
@@ -58,6 +60,25 @@ public class TelegramBotContent {
                         2. /editarcategorias
                         3. /regresar
                         """;
+
+        public static final String SUB_MENU_EDITAR_CATEGORIAS = """
+                        🤖:
+                        *Por favor selecciona una opcion*
+
+                        1. /agregarnueva
+                        2. /vermiscategorias
+                        4. /menu
+                        """;
+
+        public static final String SUB_MENU_INGRESO_EGRESO = """
+                        🤖:
+                        *Por favor selecciona una opcion*
+
+                        1. /Ingreso
+                        2. /Egreso
+                        3. /menu
+
+                                """;
         public static final String USER_MSG_1 = """
                         🤖 ¡Hola! 👋
 
@@ -280,27 +301,84 @@ public class TelegramBotContent {
                                 """, stringDate, stringDetails, ammount, typeOfMovement, category);
         }
 
-        public static String USER_PROFILE(String name, double balance, int totalMovements, String lastActivityDate, double ahorros) {
+        public static String categoriesList(String[] incomeCategories, String[] outcomeCategories) {
+                String listMesage = "";
+                listMesage += """
+                                🤖:
+
+                                Esta es tu lista de categorias:
+
+                                💰 *Ingresos*:
+                                """;
+                for (String incomeCategory : incomeCategories) {
+                        listMesage += incomeCategory + "\n";
+                }
+                listMesage += """
+
+                                🧾 *Egresos*:
+                                """;
+                for (String outcomeCategory : outcomeCategories) {
+                        listMesage += outcomeCategory + "\n";
+                }
+                return listMesage;
+        }
+
+        public static String USER_PROFILE(String name, double balance, int totalMovements, String lastActivityDate,
+                        double ahorros) {
                 return String.format("""
                                 🤖 *Perfil del Usuario*
-            
+
                                 👤 Nombre: %s
                                 💼 Saldo actual: `%.2f`
                                 💰 Ahorros: `%.2f`
                                 📊 Total de movimientos: %d
                                 🕒 Última actividad: %s
-            
+
                                 ¡Sigue gestionando tus finanzas con éxito!
 
                                 Si quieres cambiar tu perfil, haz click en /editarperfil
                                 """, name, balance, ahorros, totalMovements, lastActivityDate);
-            }
-            
+        }
+
         public static final String ERROR_MESSAGE = """
                         🤖 Tienes un error en tu monto. 🚫
 
                         Por favor incluye solo números. 📝
 
                         Si necesitas que tenga decimales, escríbelo con un punto. Ejemplo: 120000.30
+                        """;
+        public static final String DONATE_MESSAGE = """
+                        🤖 ¡Gracias por querer apoyar el proyecto!
+
+                        Con tu donacion nos ayudas a crecer este proyecto y crear muchos mas.
+
+                        Para donar puedes entrar al siguiente [enlace](https://buymeacoffee.com/borgesmj19)
+
+
+                        """;
+
+        public static final String ABOUT_MESSAGE = """
+                        🤖:
+
+                        ¿Sobre quien quieres saber?
+
+                        1. /estebot - *Acerca de este bot*
+                        2. /micreador - *Acerca de mi creador*
+                        3. /menu - *Regresar al menu principal*
+
+
+                        """;
+        public static final String THIS_BOT_MESSAGE = """
+                        🤖:
+                        ¡Hola! Soy Finance Bot, y estoy aquí para ayudarte a mantener tus cuentas personales al día.
+                        ¡Porque siempre es importante tener el control de tus finanzas! 💸
+                        Recuerda mantener al dia tus cuentas.
+                        """;
+
+        public static final String CREATOR_MESSAGE ="""
+                        🤖:
+                        Mi programador es Miguel, un desarrollador frontend, con experiencia en web apps.
+
+                        Puedes ver su trabajo en su [portfolio](https://borgesmj.github.io/) o su perfil de [github](https://github.com/borgesmj19)
                         """;
 }

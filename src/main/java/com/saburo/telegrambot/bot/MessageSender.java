@@ -36,11 +36,24 @@ public class MessageSender {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setText(text);
-        sendMessage.setParseMode("Markdown");
+        sendMessage.enableMarkdown(true);
+        sendMessage.disableWebPagePreview();
 
         // Intentamos enviar el mensaje
         try {
            bot.execute(sendMessage);
+        } catch (Exception e) {
+            System.err.println("Error al enviar el mensaje: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void sendAdminMessage(String userId, String Text){
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(userId);
+        sendMessage.setText(Text);
+        try {
+            bot.execute(sendMessage);
         } catch (Exception e) {
             System.err.println("Error al enviar el mensaje: " + e.getMessage());
             e.printStackTrace();

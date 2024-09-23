@@ -171,6 +171,14 @@ public class MessageHandler {
                 messageSender.sendMessage(newMessage, USER_MSG_6(newMessage.getText()));
                 messageSender.sendMessage(newMessage, USER_MSG_21);
             }
+        } else if (userStatus.getIsWaitingForNewCategoryName(newMessage.getFrom().getId())){
+                databaseCommands.saveCategories(
+                    newMessage.getFrom().getId(),
+                    newMessage.getText(),
+                    userStatus.getTypeOfMovement(newMessage.getFrom().getId())
+                );
+                userStatus.setIsWaitingForNewCategoryName(newMessage.getFrom().getId(), false);
+                messageSender.sendMessage(newMessage, "nueva categoria guardada");
         }
     }
 }

@@ -570,4 +570,21 @@ public class DatabaseCommands {
         }
         return date;
     }
+
+
+    public int usersCount(){
+        int count = 0;
+        String SqlQueryString = "SELECT COUNT(*) FROM USERS";
+        try {
+            PreparedStatement usersCountStmt = connection.prepareStatement(SqlQueryString);
+            ResultSet rs = usersCountStmt.executeQuery();
+            if (rs.next()){
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al contar los usuarios");
+            System.out.println(e);
+        }
+        return count;
+    }
 }   
