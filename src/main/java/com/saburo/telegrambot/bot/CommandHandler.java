@@ -220,6 +220,16 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, CREATOR_MESSAGE);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
                 break;
+            case "/conteousuarios":
+                String chatId = TelegramBot.getAdminChatId();
+                if (newMessage.getFrom().getId().toString().equals(chatId)) {
+                    int usersCount = databaseCommands.usersCount();
+                    messageSender.sendMessage(newMessage, "Hay " + usersCount + " usuarios registrados");
+
+                } else {
+                    messageSender.sendMessage(newMessage, "No tienes permisos para usar este comando");
+                }
+                break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion

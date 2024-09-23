@@ -87,6 +87,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         return EnvConfig.get("TELEGRAM_BOT_TOKEN");
     }
 
+    public static String getAdminChatId(){
+        return EnvConfig.get("ADMIN_CHAT_ID");
+    }
+
     /**
      * Maneja las actualizaciones (mensajes) recibidas por el bot.
      * 
