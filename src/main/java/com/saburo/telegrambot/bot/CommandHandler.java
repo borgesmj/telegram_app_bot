@@ -209,6 +209,17 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, USER_MSG_21);
 
                 break;
+            case "/about":
+                messageSender.sendMessage(newMessage, ABOUT_MESSAGE);
+                break;
+            case "/estebot":
+                messageSender.sendMessage(newMessage, THIS_BOT_MESSAGE);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+                break;
+            case "/micreador":
+                messageSender.sendMessage(newMessage, CREATOR_MESSAGE);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+                break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion
