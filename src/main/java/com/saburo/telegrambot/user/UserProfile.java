@@ -24,6 +24,10 @@ public class UserProfile {
     private boolean isNewUser;
     //Role
     private boolean isAdmin;
+    // Capital
+    private double userCapital;
+    // Ahorros
+    private double userSavings;
     /**
      * Estos parametros de abajo son para usarlos en un futuro
      */
@@ -51,7 +55,9 @@ public class UserProfile {
         this.category = "";
         this.monthInt = 0;
         this.isNewUser = false;
-        this.isAdmin = false; // Valor predeterminado: rol de usuario estándar
+        this.isAdmin = false; 
+        this.userCapital = 0;
+        this.userSavings = 0;
         /**
          * 
          * this.is_premium = false; // Valor predeterminado: el usuario no es premium
@@ -104,6 +110,14 @@ public class UserProfile {
 
     public boolean getIsAdmin() {
         return isAdmin;
+    }
+
+    public double getUserCapital(){
+        return userCapital;
+    }
+
+    public double getUserSavings(){
+        return userSavings;
     }
 
     // Setters
@@ -182,6 +196,14 @@ public class UserProfile {
 
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
+    }
+
+    public void setUserCapital(double usercapital){
+        this.userCapital = usercapital;
+    }
+
+    public void setUserSavings(double usersavings){
+        this.userSavings = usersavings;
     }
 
 }

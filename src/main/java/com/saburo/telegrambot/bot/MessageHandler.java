@@ -125,10 +125,16 @@ public class MessageHandler {
         } else if (userStatus.getIsWaitingForNewAmmount(newMessage.getFrom().getId())) {
             boolean isNumber = userProfile.setAmmount(newMessage.getText());
             if (isNumber) {
-
-                messageSender.sendMessage(newMessage, USER_MSG_15);
-                userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
-                userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), true);
+                if (userStatus.getTypeOfMovement(newMessage.getFrom().getId()).equals("EGRESO")
+                        && userProfile.getAmmount() > userProfile.getUserCapital()) {
+                    messageSender.sendMessage(newMessage,
+                            "no tienes ese monto disponible, consulta tu saldo disponible en /balancegeneral");
+                    return;
+                } else {
+                    messageSender.sendMessage(newMessage, USER_MSG_15);
+                    userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
+                    userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), true);
+                }
             } else {
                 messageSender.sendMessage(newMessage, ERROR_MESSAGE);
             }
@@ -172,22 +178,28 @@ public class MessageHandler {
                 messageSender.sendMessage(newMessage, USER_MSG_6(newMessage.getText()));
                 messageSender.sendMessage(newMessage, USER_MSG_21);
             }
-        } else if (userStatus.getIsWaitingForNewCategoryName(newMessage.getFrom().getId())){
-                databaseCommands.saveCategories(
+        } else if (userStatus.getIsWaitingForNewCategoryName(newMessage.getFrom().getId())) {
+            databaseCommands.saveCategories(
                     newMessage.getFrom().getId(),
                     newMessage.getText(),
-                    userStatus.getTypeOfMovement(newMessage.getFrom().getId())
-                );
-                userStatus.setIsWaitingForNewCategoryName(newMessage.getFrom().getId(), false);
-                messageSender.sendMessage(newMessage, "nueva categoria guardada");
-        } else if (userStatus.getIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId())){
+                    userStatus.getTypeOfMovement(newMessage.getFrom().getId()));
+            userStatus.setIsWaitingForNewCategoryName(newMessage.getFrom().getId(), false);
+            messageSender.sendMessage(newMessage, "nueva categoria guardada");
+        } else if (userStatus.getIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId())) {
             userProfile.setAmmount(newMessage.getText());
-            databaseCommands.savingsWithdraw(
-                newMessage.getFrom().getId(),
-                userProfile.getAmmount());
-            messageSender.sendMessage(newMessage, "Listo, realizaste un retiro de " + userProfile.getAmmount() + " disfrutalos");
-            userStatus.setIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId(), false);
-            messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+            if (userProfile.getAmmount() > userProfile.getUserSavings()) {
+                messageSender.sendMessage(newMessage,
+                        "no tienes ese monto disponible en tus ahorros.");
+                return;
+            } else {
+                databaseCommands.savingsWithdraw(
+                        newMessage.getFrom().getId(),
+                        userProfile.getAmmount());
+                messageSender.sendMessage(newMessage,
+                        "Listo, realizaste un retiro de " + userProfile.getAmmount() + " disfrutalos");
+                userStatus.setIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId(), false);
+                messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+            }
         }
     }
 }
