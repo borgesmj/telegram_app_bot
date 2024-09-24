@@ -61,24 +61,10 @@ public class CommandHandler {
     public void handleCommand() {
         // Obtiene el texto del mensaje para determinar qué comando ejecutar.
         switch (newMessage.getText()) {
-            case "/menu":
-                messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
-                // con la entrada del comando /menu seteamos todos los estados a false, para qeu
-                // el bot no espere ningun texto fuera de un comando
-                userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
-                userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
-                userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
-                userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), false);
-                userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), false);
-                userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), false);
-                userStatus.setIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId(), false);
-                userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
-                userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "");
-                userStatus.setIsWaitingForMonth(newMessage.getFrom().getId(), false);
-                break;
             case "/start":
                 /**
                  * Comando /start:
+                 * Inicio de la aplicacion
                  * Verifica si el usuario es nuevo, es decir, si su ID de Telegram ya existe en
                  * la base de datos.
                  * - Si es un usuario nuevo, envía un mensaje de bienvenida y, si el username
@@ -101,6 +87,7 @@ public class CommandHandler {
                     userProfile.setUsername(newMessage.getFrom().getUserName());
                     userProfile.setTelegramUserID(newMessage.getFrom().getId());
                     username = userProfile.getUsername();
+                    databaseCommands.insertNewUser(userProfile.getTelegramUserID(), userProfile.getUsername());
                     if (username != null) {
                         messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_2(username));
                     } else {
@@ -114,12 +101,26 @@ public class CommandHandler {
                     messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
                 }
                 break;
+            case "/menu":
+                messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+                // con la entrada del comando /menu seteamos todos los estados a false, para qeu
+                // el bot no espere ningun texto fuera de un comando
+                userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForDetails(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewAmmount(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForNewSavingsAmmount(newMessage.getFrom().getId(), false);
+                userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
+                userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "");
+                userStatus.setIsWaitingForMonth(newMessage.getFrom().getId(), false);
+                break;
             // comando por el cual el usario indica que quiere dejar el nombre de usuario
             // como lo tiene en su perfil de telegram
             case "/estabienasi":
                 userProfile.setUsername(newMessage.getFrom().getUserName());
                 userProfile.setTelegramUserID(newMessage.getFrom().getId());
-                databaseCommands.insertNewUser(userProfile.getTelegramUserID(), userProfile.getUsername());
                 messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_6(userProfile.getUsername()));
                 userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), true);
                 messageSender.sendMessage(newMessage, USER_MSG_8);

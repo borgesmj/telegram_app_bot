@@ -56,7 +56,7 @@ public class MessageHandler {
              */
 
             // inserta el nuevo nombre de usuario en la base de datos
-            String errorMessage = databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getText());
+            String errorMessage = databaseCommands.updateUsername(newMessage.getFrom().getId(), newMessage.getText());
             // si el nombre de usuario no se encuentra en la base de datos, el metodo
             // retorna "", de lo contrario, retorna un mensaje que se enviará al usuario y
             // mantiene el estado de isWaitingForNewUsername en true, hasta que coloque un
