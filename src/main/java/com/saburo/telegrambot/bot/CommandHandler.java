@@ -80,7 +80,7 @@ public class CommandHandler {
                  * @return true o false
                  * 
                  */
-                
+
                 boolean isNewUser = userProfile.getIsNewUser();
                 if (isNewUser) {
                     messageSender.sendMessage(newMessage, USER_MSG_1);
@@ -230,17 +230,17 @@ public class CommandHandler {
                 double savingsAmmount = databaseCommands.sumAllSavings(newMessage.getFrom().getId());
                 messageSender.sendMessage(newMessage, USER_REPORT_4(savingsAmmount));
                 messageSender.sendMessage(newMessage, USER_MSG_21);
-            break;
+                break;
             case "/menuadmin":
-            adminchatId = TelegramBot.getAdminChatId(); 
-            if (newMessage.getFrom().getId().toString().equals(adminchatId)) {
-                messageSender.sendMessage(newMessage, MENU_ADMIN);
-            } else {
-                messageSender.sendMessage(newMessage, "No tienes permisos para usar este comando");
-            }
-            break;
+                adminchatId = TelegramBot.getAdminChatId();
+                if (newMessage.getFrom().getId().toString().equals(adminchatId)) {
+                    messageSender.sendMessage(newMessage, MENU_ADMIN);
+                } else {
+                    messageSender.sendMessage(newMessage, "No tienes permisos para usar este comando");
+                }
+                break;
             case "/conteousuarios":
-                adminchatId = TelegramBot.getAdminChatId(); 
+                adminchatId = TelegramBot.getAdminChatId();
                 if (newMessage.getFrom().getId().toString().equals(adminchatId)) {
                     int usersCount = databaseCommands.usersCount();
                     messageSender.sendMessage(newMessage, "Hay " + usersCount + " usuarios registrados");
@@ -249,6 +249,10 @@ public class CommandHandler {
                     messageSender.sendMessage(newMessage, "No tienes permisos para usar este comando");
                 }
                 break;
+            case "/retiroahorro":
+                messageSender.sendMessage(newMessage, USER_MSG_24);   
+                userStatus.setIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId(), true); 
+            break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion

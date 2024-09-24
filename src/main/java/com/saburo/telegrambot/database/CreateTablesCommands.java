@@ -74,17 +74,29 @@ public class CreateTablesCommands {
                     UNIQUE (USER_ID, DETALLES)
                     );
                 """;
+        String createAhorrosTAble = """
+                CREATE TABLE IF NOT EXISTS AHORROS (
+                    ID INT PRIMARY KEY AUTO_INCREMENT,
+                    DETALLES VARCHAR(50),
+                    MONTO DOUBLE NOT NULL,
+                    CREATED_AT TIMESTAMP NOT NULL,
+                    USER_ID INT NOT NULL,
+                    FOREIGN KEY (USER_ID) REFERENCES USERS(ID)
+                )
+                """;
         try (
                 // Preparar las sentencias de creación de tablas
                 PreparedStatement createUsersStmt = connection.prepareStatement(createUsersTable);
                 PreparedStatement createCategoriasStmt = connection.prepareStatement(createCategoriasTable);
                 PreparedStatement createMovimientosStmt = connection.prepareStatement(createMovimientosTable);
                 PreparedStatement createGastosFijosStmt = connection.prepareStatement(createGastosFijosTable);
+                PreparedStatement createAhorrosStmt = connection.prepareStatement(createAhorrosTAble);
             ) {
             // Ejecutar las sentencias de creación de tablas una por una
             createUsersStmt.executeUpdate();
             createCategoriasStmt.executeUpdate();
             createMovimientosStmt.executeUpdate();
+            createAhorrosStmt.execute();
             System.out.println("Tablas creadas correctamente");
         } catch (SQLException e) {
             System.out.println("Error al crear las tablas");

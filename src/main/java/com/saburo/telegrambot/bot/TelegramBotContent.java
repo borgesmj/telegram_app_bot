@@ -249,6 +249,15 @@ public class TelegramBotContent {
         public static final String USER_MSG_23 = """
                         O presiona /reportemensual para volver al listado de los meses.
                         """;
+        public static final String USER_MSG_24 = """
+                        🤖 
+
+                        Llegamos a la meta que querias!!!
+
+                        Dime, ¿cuanto quieres retirar?
+
+                        o si aun no lo quieres hacer, presiona /menu
+                        """;
 
         public static String USER_REPORT_1(String ingresos, String egresos, String ahorros, String balance) {
                 return String.format("""
@@ -292,7 +301,7 @@ public class TelegramBotContent {
 
                                 Hasta la fecha, tienes un ahorro de: `%.2f` 🏦
 
-                                Si quieres realizar un retiro de ahorros, haz clic en /retirarahorro.
+                                Si quieres realizar un retiro de ahorros, haz clic en /retiroahorro.
                                 """, savingsAmmount);
         }
 

@@ -84,7 +84,6 @@ public class MessageHandler {
         } else if (userStatus.getIsWaitingForInitialSavings(newMessage.getFrom().getId())) {
             boolean isNumber = userProfile.setAmmount(newMessage.getText());
             if (isNumber) {
-
                 databaseCommands.saveIniatialSavings(newMessage.getFrom().getId(), userProfile.getAmmount());
                 messageSender.sendMessage(newMessage, USER_MSG_10);
                 userStatus.setIsWaitingForInitialSavings(newMessage.getFrom().getId(), false);
@@ -153,7 +152,7 @@ public class MessageHandler {
             boolean isNumber = userProfile.setAmmount(newMessage.getText());
             if (isNumber) {
 
-                databaseCommands.saveNewSavings(
+                databaseCommands.savingsDeposit(
                         newMessage.getFrom().getId(),
                         userProfile.getAmmount(),
                         userStatus.getTypeOfMovement(newMessage.getFrom().getId()));
@@ -181,6 +180,14 @@ public class MessageHandler {
                 );
                 userStatus.setIsWaitingForNewCategoryName(newMessage.getFrom().getId(), false);
                 messageSender.sendMessage(newMessage, "nueva categoria guardada");
+        } else if (userStatus.getIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId())){
+            userProfile.setAmmount(newMessage.getText());
+            databaseCommands.savingsWithdraw(
+                newMessage.getFrom().getId(),
+                userProfile.getAmmount());
+            messageSender.sendMessage(newMessage, "Listo, realizaste un retiro de " + userProfile.getAmmount() + " disfrutalos");
+            userStatus.setIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId(), false);
+            messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
         }
     }
 }

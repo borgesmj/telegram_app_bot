@@ -184,13 +184,12 @@ public class DatabaseCommands {
 
     public void saveIniatialSavings(long userId, double initialSavings){
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, CREATED_AT, USER_ID, TIPO_MOVIMIENTO) VALUES (?, ?, ?, ?, ?)";
+        String SqlQueryString = "INSERT INTO AHORROS (DETALLES, MONTO, CREATED_AT, USER_ID) VALUES (?, ?, ?, ?);";
         try (PreparedStatement saveInitialSavingsStmt = connection.prepareStatement(SqlQueryString)){
             saveInitialSavingsStmt.setString(1, "AHORRO INICIAL");
             saveInitialSavingsStmt.setDouble(2, initialSavings);
             saveInitialSavingsStmt.setTimestamp(3, getCurrentTimestamp());
             saveInitialSavingsStmt.setInt(4, currentUserId);
-            saveInitialSavingsStmt.setString(5, "AHORROS");
             saveInitialSavingsStmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error al actualizar el ultimo login");
@@ -314,16 +313,24 @@ public class DatabaseCommands {
      * @param typeOfMovement
      */
 
-     public void saveNewSavings(long userId, double amount, String typeOfMovement){
+     public void savingsDeposit(long userId, double amount, String typeOfMovement){
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, CREATED_AT, USER_ID, TIPO_MOVIMIENTO) VALUES(?, ?, ?, ?, ?);";
-        try (PreparedStatement saveNewMovementStmt = connection.prepareStatement(SqlQueryString)){
-            saveNewMovementStmt.setString(1, "AHORROS");
+        String SqlSavingDepositMovimientosTable = "INSERT INTO MOVIMIENTOS (DETALLES, MONTO, CREATED_AT, USER_ID, TIPO_MOVIMIENTO) VALUES(?, ?, ?, ?, ?);";
+        String SqlSavingDepositAhorrosTable = "INSERT INTO AHORROS (DETALLES, MONTO, CREATED_AT, USER_ID) VALUES ('DEPOSITO AHORROS', ?, ?, ?)";
+        try (
+            PreparedStatement saveNewMovementStmt = connection.prepareStatement(SqlSavingDepositMovimientosTable);
+            PreparedStatement saveNewSavingsStmt = connection.prepareStatement(SqlSavingDepositAhorrosTable);
+            ){
+            saveNewMovementStmt.setString(1, "DEPOSITO AHORROS");
             saveNewMovementStmt.setDouble(2, amount);
             saveNewMovementStmt.setTimestamp(3, getCurrentTimestamp());
             saveNewMovementStmt.setInt(4, currentUserId);
             saveNewMovementStmt.setString(5, typeOfMovement);
             saveNewMovementStmt.executeUpdate();
+            saveNewSavingsStmt.setDouble(1, amount);
+            saveNewSavingsStmt.setTimestamp(2, getCurrentTimestamp());
+            saveNewSavingsStmt.setInt(3, currentUserId);
+            saveNewSavingsStmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error al ingresar nuevo ahorro");
             System.out.println(e);
@@ -378,7 +385,7 @@ public class DatabaseCommands {
         List<String> movimientos = new ArrayList<>();
         int currentUserId = getCurrentUserId(userId);
         String SqlQueryString = """
-            SELECT CONCAT(LPAD(ID, 3, '0'), "+", DETALLES, "+", MONTO, "+", TIPO_MOVIMIENTO) AS TRANSACCION FROM MOVIMIENTOS WHERE TIPO_MOVIMIENTO != 'AHORROS'  AND DETALLES != 'AHORRO INICIAL'  AND DETALLES != 'CAPITAL INICIAL'  AND USER_ID = ? ORDER BY CREATED_AT DESC LIMIT 10
+            SELECT CONCAT(LPAD(ID, 3, '0'), "+", DETALLES, "+", MONTO, "+", TIPO_MOVIMIENTO) AS TRANSACCION FROM MOVIMIENTOS WHERE DETALLES != 'AHORRO INICIAL'  AND DETALLES != 'CAPITAL INICIAL'  AND USER_ID = ? ORDER BY CREATED_AT DESC LIMIT 10
                 """;
         try (PreparedStatement getUltimosMovimientosStmt = connection.prepareStatement(SqlQueryString)){
             getUltimosMovimientosStmt.setInt(1, currentUserId);
@@ -455,11 +462,10 @@ public class DatabaseCommands {
     public double getSavingsCurrentMonth(long userId, int monthInt){
         double result = 0;
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "SELECT SUM(MONTO) FROM MOVIMIENTOS WHERE TIPO_MOVIMIENTO = ? AND MONTH(CREATED_AT) = ? AND USER_ID = ?";
+        String SqlQueryString = "SELECT SUM(MONTO) FROM AHORROS WHERE MONTH(CREATED_AT) = ? AND USER_ID = ?;";
         try (PreparedStatement getSavingsCurrentMonthStmt = connection.prepareStatement(SqlQueryString)){
-            getSavingsCurrentMonthStmt.setString(1, "AHORROS");
-            getSavingsCurrentMonthStmt.setInt(2, monthInt);
-            getSavingsCurrentMonthStmt.setInt(3, currentUserId);
+            getSavingsCurrentMonthStmt.setInt(1, monthInt);
+            getSavingsCurrentMonthStmt.setInt(2, currentUserId);
             ResultSet rs = getSavingsCurrentMonthStmt.executeQuery();
             if (rs.next()) {
                 result = rs.getDouble(1);
@@ -474,10 +480,9 @@ public class DatabaseCommands {
     public double getTotalSavings(long userId){
         int currentUserId = getCurrentUserId(userId);
         double monto = 0;
-        String SqlQueryString = "SELECT SUM(MONTO) FROM MOVIMIENTOS WHERE TIPO_MOVIMIENTO = ? AND USER_ID = ?";
+        String SqlQueryString = "SELECT SUM(MONTO) FROM AHORROS WHERE USER_ID = ?";
         try (PreparedStatement getTotalSavingsStmt = connection.prepareStatement(SqlQueryString)){
-            getTotalSavingsStmt.setString(1, "AHORROS");
-            getTotalSavingsStmt.setInt(2, currentUserId);
+            getTotalSavingsStmt.setInt(1, currentUserId);
             ResultSet rs = getTotalSavingsStmt.executeQuery();
             if (rs.next()) {
                 monto = rs.getDouble(1);
@@ -621,10 +626,9 @@ public class DatabaseCommands {
     public double sumAllSavings(long userId){
         double ammount = 0;
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "SELECT SUM(MONTO) FROM  MOVIMIENTOS WHERE USER_ID = ? AND TIPO_MOVIMIENTO =?";
+        String SqlQueryString = "SELECT SUM(MONTO) FROM AHORROS WHERE USER_ID = ?";
         try (PreparedStatement sumAllSavingsStmt = connection.prepareStatement(SqlQueryString)){
             sumAllSavingsStmt.setInt(1, currentUserId);
-            sumAllSavingsStmt.setString(2, "AHORROS");
             ResultSet rs = sumAllSavingsStmt.executeQuery();
             if (rs.next()){
                 ammount = rs.getDouble(1);
@@ -634,5 +638,38 @@ public class DatabaseCommands {
             System.out.println(e);
         }
         return ammount;
+    }
+
+    public double getSavingsTotal(long userId){
+        double ammount = 0;
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT SUM(MONTO) FROM AHORROS WHERE USER_ID = ?";
+        try (PreparedStatement getSavingsAmmount = connection.prepareStatement(SqlQueryString)){
+            getSavingsAmmount.setInt(1, currentUserId);
+            ResultSet rs = getSavingsAmmount.executeQuery();
+            if (rs.next()){
+                ammount = rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+            System.out.println("Error sumando todos los ahorros");
+        }
+        return ammount;
+    }
+
+    public void savingsWithdraw(long userId, double ammount){
+        int currentUserId = getCurrentUserId(userId);
+        double negativeAmmount = ammount * -1;
+        String SqlQueryString = "INSERT INTO AHORROS (DETALLES, MONTO, CREATED_AT, USER_ID) VALUES ('RETIRO AHORROS', ?, ?, ?)";
+        try (PreparedStatement savingsWithdrawStmt = connection.prepareStatement(SqlQueryString)){
+            savingsWithdrawStmt.setDouble(1, negativeAmmount);
+            savingsWithdrawStmt.setTimestamp(2, getCurrentTimestamp());
+            savingsWithdrawStmt.setInt(3, currentUserId);
+            savingsWithdrawStmt.executeUpdate();
+            
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("error manejado retiro deposito");
+        }
     }
 }   
