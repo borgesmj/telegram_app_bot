@@ -226,6 +226,11 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, CREATOR_MESSAGE);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
                 break;
+            case "/reporteahorros":
+                double savingsAmmount = databaseCommands.sumAllSavings(newMessage.getFrom().getId());
+                messageSender.sendMessage(newMessage, USER_REPORT_4(savingsAmmount));
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+            break;
             case "/menuadmin":
             adminchatId = TelegramBot.getAdminChatId(); 
             if (newMessage.getFrom().getId().toString().equals(adminchatId)) {

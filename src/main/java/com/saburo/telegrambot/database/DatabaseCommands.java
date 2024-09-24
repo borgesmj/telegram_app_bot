@@ -617,4 +617,22 @@ public class DatabaseCommands {
         }
         return isAdmin;
     }
+
+    public double sumAllSavings(long userId){
+        double ammount = 0;
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT SUM(MONTO) FROM  MOVIMIENTOS WHERE USER_ID = ? AND TIPO_MOVIMIENTO =?";
+        try (PreparedStatement sumAllSavingsStmt = connection.prepareStatement(SqlQueryString)){
+            sumAllSavingsStmt.setInt(1, currentUserId);
+            sumAllSavingsStmt.setString(2, "AHORROS");
+            ResultSet rs = sumAllSavingsStmt.executeQuery();
+            if (rs.next()){
+                ammount = rs.getDouble(1);
+            }
+        } catch (SQLException e){
+            System.out.println("Error sumando ahorros");
+            System.out.println(e);
+        }
+        return ammount;
+    }
 }   

@@ -30,7 +30,8 @@ public class TelegramBotContent {
                         1. /balancegeneral - *📈 Balance General*
                         2. /ultimosmovimientos - *📜 Últimos Movimientos*
                         3. /reportemensual - *📅 Reporte Mensual*
-                        4. /menu - *🚪 Regresar al menú principal*
+                        4. /reporteahorros - *🏦 Reporte de Ahorros*
+                        5. /menu - *🚪 Regresar al menú principal*
                         """;
 
         public static final String SUB_MENU_MESES = """
@@ -283,6 +284,16 @@ public class TelegramBotContent {
                 }
 
                 return report.toString();
+        }
+
+        public static String USER_REPORT_4(double savingsAmmount){
+                return String.format("""
+                                🤖:
+
+                                Hasta la fecha, tienes un ahorro de: `%.2f` 🏦
+
+                                Si quieres realizar un retiro de ahorros, haz clic en /retirarahorro.
+                                """, savingsAmmount);
         }
 
         public static String USER_REPORT_3(String stringDate, String stringDetails, String ammount,
