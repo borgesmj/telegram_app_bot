@@ -38,9 +38,10 @@ public class UserReports {
     public String getBalanceGeneral(long userId) {
         double totalIncome = databaseCommands.getAmmountsByTypeOfMovement(userId, "INGRESO");
         double totalOutcome = databaseCommands.getAmmountsByTypeOfMovement(userId, "EGRESO");
-        double totalSavings = databaseCommands.getAmmountsByTypeOfMovement(userId, "AHORROS");
-        double getSavingsWoutInitial = databaseCommands.getSavingsWoutInitial(userId);
-        double newBalance = totalIncome - totalOutcome - getSavingsWoutInitial;
+        double totalSavingsMovimientosTable = databaseCommands.getAmmountsByTypeOfMovement(userId, "AHORROS");
+        double totalSavings = databaseCommands.getSavingsTotal(userId);
+        // double getSavingsWoutInitial = databaseCommands.getSavingsWoutInitial();
+        double newBalance = totalIncome - totalOutcome - totalSavingsMovimientosTable;
         // Convertir los valores double a String
         String incomeString = String.format("%.2f", totalIncome);
         String outcomeString = String.format("%.2f", totalOutcome);

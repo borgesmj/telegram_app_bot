@@ -30,7 +30,8 @@ public class TelegramBotContent {
                         1. /balancegeneral - *📈 Balance General*
                         2. /ultimosmovimientos - *📜 Últimos Movimientos*
                         3. /reportemensual - *📅 Reporte Mensual*
-                        4. /menu - *🚪 Regresar al menú principal*
+                        4. /reporteahorros - *🏦 Reporte de Ahorros*
+                        5. /menu - *🚪 Regresar al menú principal*
                         """;
 
         public static final String SUB_MENU_MESES = """
@@ -79,6 +80,13 @@ public class TelegramBotContent {
                         3. /menu
 
                                 """;
+        public static final String MENU_ADMIN = """
+                        🤖:
+                        *MENU ADMIN*
+
+                        1. /verusuarios
+                        2. /conteousuarios
+                        """;
         public static final String USER_MSG_1 = """
                         🤖 ¡Hola! 👋
 
@@ -241,6 +249,15 @@ public class TelegramBotContent {
         public static final String USER_MSG_23 = """
                         O presiona /reportemensual para volver al listado de los meses.
                         """;
+        public static final String USER_MSG_24 = """
+                        🤖 
+
+                        Llegamos a la meta que querias!!!
+
+                        Dime, ¿cuanto quieres retirar?
+
+                        o si aun no lo quieres hacer, presiona /menu
+                        """;
 
         public static String USER_REPORT_1(String ingresos, String egresos, String ahorros, String balance) {
                 return String.format("""
@@ -276,6 +293,16 @@ public class TelegramBotContent {
                 }
 
                 return report.toString();
+        }
+
+        public static String USER_REPORT_4(double savingsAmmount){
+                return String.format("""
+                                🤖:
+
+                                Hasta la fecha, tienes un ahorro de: `%.2f` 🏦
+
+                                Si quieres realizar un retiro de ahorros, haz clic en /retiroahorro.
+                                """, savingsAmmount);
         }
 
         public static String USER_REPORT_3(String stringDate, String stringDetails, String ammount,

@@ -26,6 +26,7 @@ public class CommandHandler {
     // private ErrorsHandler errorsHandler;
     private UserReports userReports;
     private String username;
+    private String adminchatId;
 
     public CommandHandler(Message newMessage, MessageSender messageSender, DatabaseCommands databaseCommands,
             UserStatus userStatus, UserProfile userProfile, ErrorsHandler errorsHandler, UserReports userReports) {
@@ -37,6 +38,7 @@ public class CommandHandler {
         // this.errorsHandler = errorsHandler;
         this.userReports = userReports;
         this.username = "";
+        this.adminchatId = "";
 
     }
 
@@ -59,6 +61,46 @@ public class CommandHandler {
     public void handleCommand() {
         // Obtiene el texto del mensaje para determinar qué comando ejecutar.
         switch (newMessage.getText()) {
+            case "/start":
+                /**
+                 * Comando /start:
+                 * Inicio de la aplicacion
+                 * Verifica si el usuario es nuevo, es decir, si su ID de Telegram ya existe en
+                 * la base de datos.
+                 * - Si es un usuario nuevo, envía un mensaje de bienvenida y, si el username
+                 * está disponible, lo utiliza.
+                 * - Si no hay un username disponible, solicita que el usuario lo proporcione.
+                 * - Si ya existe el usuario, envía un mensaje indicando que el usuario ya está
+                 * registrado.
+                 */
+                /**
+                 * Verifica que no haya usuario registrado en la base de datos ejecutanto el
+                 * metodo checkUserId en @link DatabaseCommands
+                 * 
+                 * @return true o false
+                 * 
+                 */
+
+                boolean isNewUser = userProfile.getIsNewUser();
+                if (isNewUser) {
+                    messageSender.sendMessage(newMessage, USER_MSG_1);
+                    userProfile.setUsername(newMessage.getFrom().getUserName());
+                    userProfile.setTelegramUserID(newMessage.getFrom().getId());
+                    username = userProfile.getUsername();
+                    databaseCommands.insertNewUser(userProfile.getTelegramUserID(), userProfile.getUsername());
+                    if (username != null) {
+                        messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_2(username));
+                    } else {
+                        messageSender.sendMessage(newMessage, USER_MSG_3);
+                        userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), true);
+                    }
+                } else {
+                    username = userProfile.getUsername();
+                    databaseCommands.updateLastLogin(newMessage.getFrom().getId());
+                    messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_7(username));
+                    messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
+                }
+                break;
             case "/menu":
                 messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
                 // con la entrada del comando /menu seteamos todos los estados a false, para qeu
@@ -74,47 +116,11 @@ public class CommandHandler {
                 userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "");
                 userStatus.setIsWaitingForMonth(newMessage.getFrom().getId(), false);
                 break;
-            case "/start":
-                /**
-                 * Comando /start:
-                 * Verifica si el usuario es nuevo, es decir, si su ID de Telegram ya existe en
-                 * la base de datos.
-                 * - Si es un usuario nuevo, envía un mensaje de bienvenida y, si el username
-                 * está disponible, lo utiliza.
-                 * - Si no hay un username disponible, solicita que el usuario lo proporcione.
-                 * - Si ya existe el usuario, envía un mensaje indicando que el usuario ya está
-                 * registrado.
-                 */
-                boolean isNewUser = databaseCommands.checkUserId(newMessage.getFrom().getId());
-                /**
-                 * Verifica que no haya usuario registrado en la base de datos ejecutanto el
-                 * metodo checkUserId en @link DatabaseCommands
-                 * 
-                 * @return true o false
-                 * 
-                 */
-                username = newMessage.getFrom().getUserName();
-                if (isNewUser) {
-                    messageSender.sendMessage(newMessage, USER_MSG_1);
-                    databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getFrom().getUserName());
-                    if (username != null) {
-                        messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_2(username));
-                    } else {
-                        messageSender.sendMessage(newMessage, USER_MSG_3);
-                        userStatus.setIsWaitingForNewUsername(newMessage.getFrom().getId(), true);
-                    }
-                } else {
-                    username = databaseCommands.getCurrentUsername(newMessage.getFrom().getId());
-                    databaseCommands.updateLastLogin(newMessage.getFrom().getId());
-                    messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_7(username));
-                    messageSender.sendMessage(newMessage, MENU_PRINCIPAL);
-                }
-                break;
             // comando por el cual el usario indica que quiere dejar el nombre de usuario
             // como lo tiene en su perfil de telegram
             case "/estabienasi":
-                userProfile.setUsername(username);
-                databaseCommands.insertNewUser(newMessage.getFrom().getId(), newMessage.getFrom().getUserName());
+                userProfile.setUsername(newMessage.getFrom().getUserName());
+                userProfile.setTelegramUserID(newMessage.getFrom().getId());
                 messageSender.sendMessage(newMessage, TelegramBotContent.USER_MSG_6(userProfile.getUsername()));
                 userStatus.setIsWaitingForNewCapital(newMessage.getFrom().getId(), true);
                 messageSender.sendMessage(newMessage, USER_MSG_8);
@@ -220,9 +226,22 @@ public class CommandHandler {
                 messageSender.sendMessage(newMessage, CREATOR_MESSAGE);
                 messageSender.sendMessage(newMessage, USER_MSG_21);
                 break;
+            case "/reporteahorros":
+                double savingsAmmount = databaseCommands.sumAllSavings(newMessage.getFrom().getId());
+                messageSender.sendMessage(newMessage, USER_REPORT_4(savingsAmmount));
+                messageSender.sendMessage(newMessage, USER_MSG_21);
+                break;
+            case "/menuadmin":
+                adminchatId = TelegramBot.getAdminChatId();
+                if (newMessage.getFrom().getId().toString().equals(adminchatId)) {
+                    messageSender.sendMessage(newMessage, MENU_ADMIN);
+                } else {
+                    messageSender.sendMessage(newMessage, "No tienes permisos para usar este comando");
+                }
+                break;
             case "/conteousuarios":
-                String chatId = TelegramBot.getAdminChatId();
-                if (newMessage.getFrom().getId().toString().equals(chatId)) {
+                adminchatId = TelegramBot.getAdminChatId();
+                if (newMessage.getFrom().getId().toString().equals(adminchatId)) {
                     int usersCount = databaseCommands.usersCount();
                     messageSender.sendMessage(newMessage, "Hay " + usersCount + " usuarios registrados");
 
@@ -230,6 +249,10 @@ public class CommandHandler {
                     messageSender.sendMessage(newMessage, "No tienes permisos para usar este comando");
                 }
                 break;
+            case "/retiroahorro":
+                messageSender.sendMessage(newMessage, USER_MSG_24);   
+                userStatus.setIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId(), true); 
+            break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion

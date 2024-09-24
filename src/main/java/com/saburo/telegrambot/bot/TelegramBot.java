@@ -103,12 +103,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         // Update
         MessageListener messageListener = new MessageListener();
         var message = messageListener.handlMessage(update);
-        /*
+        /* about
          * Cambiado el setUsername a extraerlo con cada update
+         * @link UserProfile
+         * 
          * 
          */
-        String username = databaseCommands.getCurrentUsername(message.getFrom().getId());
-        userProfile.setUsername(username);
+        userProfile.setTelegramUserID(message.getFrom().getId());
+        boolean isNewUser = databaseCommands.checkUserId(userProfile.getTelegramUserID());
+        userProfile.setIsNewUser(isNewUser);
 
         // Verifica si el mensaje tiene texto
         if (message.hasText()) {
