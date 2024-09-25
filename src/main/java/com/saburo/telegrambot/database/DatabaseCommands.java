@@ -462,7 +462,25 @@ public class DatabaseCommands {
     public double getSavingsCurrentMonth(long userId, int monthInt){
         double result = 0;
         int currentUserId = getCurrentUserId(userId);
-        String SqlQueryString = "SELECT SUM(MONTO) FROM AHORROS WHERE MONTH(CREATED_AT) = ? AND USER_ID = ?;";
+        String SqlQueryString = "SELECT SUM(MONTO) FROM AHORROS WHERE MONTH(CREATED_AT) = ? AND USER_ID = ? AND MONTO > 0;";
+        try (PreparedStatement getSavingsCurrentMonthStmt = connection.prepareStatement(SqlQueryString)){
+            getSavingsCurrentMonthStmt.setInt(1, monthInt);
+            getSavingsCurrentMonthStmt.setInt(2, currentUserId);
+            ResultSet rs = getSavingsCurrentMonthStmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al generar monto");
+            System.out.println(e);
+        }
+        return result;
+    }
+
+    public double getSavingsWithdrawCurrentMonth(long userId, int monthInt){
+        double result = 0;
+        int currentUserId = getCurrentUserId(userId);
+        String SqlQueryString = "SELECT SUM(MONTO) FROM AHORROS WHERE MONTH(CREATED_AT) = ? AND USER_ID = ? AND MONTO < 0;";
         try (PreparedStatement getSavingsCurrentMonthStmt = connection.prepareStatement(SqlQueryString)){
             getSavingsCurrentMonthStmt.setInt(1, monthInt);
             getSavingsCurrentMonthStmt.setInt(2, currentUserId);

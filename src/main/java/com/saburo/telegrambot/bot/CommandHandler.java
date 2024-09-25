@@ -115,6 +115,14 @@ public class CommandHandler {
                 userStatus.setIsWaitingForCategories(newMessage.getFrom().getId(), false);
                 userStatus.setTypeOfMovement(newMessage.getFrom().getId(), "");
                 userStatus.setIsWaitingForMonth(newMessage.getFrom().getId(), false);
+                double totalIncome = databaseCommands.getAmmountsByTypeOfMovement(newMessage.getFrom().getId(), "INGRESO");
+                double totalOutcome = databaseCommands.getAmmountsByTypeOfMovement(newMessage.getFrom().getId(), "EGRESO");
+                double totalSavingsMovimientosTable = databaseCommands.getAmmountsByTypeOfMovement(newMessage.getFrom().getId(), "AHORROS");
+                userProfile.setUserCapital(totalIncome - totalOutcome - totalSavingsMovimientosTable);
+                double totalSavings = databaseCommands.getSavingsTotal(newMessage.getFrom().getId());
+                userProfile.setUserSavings(totalSavings);
+                String username = databaseCommands.getCurrentUsername(newMessage.getFrom().getId());
+                userProfile.setUsername(username);
                 break;
             // comando por el cual el usario indica que quiere dejar el nombre de usuario
             // como lo tiene en su perfil de telegram
@@ -250,9 +258,9 @@ public class CommandHandler {
                 }
                 break;
             case "/retiroahorro":
-                messageSender.sendMessage(newMessage, USER_MSG_24);   
-                userStatus.setIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId(), true); 
-            break;
+                messageSender.sendMessage(newMessage, USER_MSG_24);
+                userStatus.setIsWaitingForSavingsWithdrawAmmount(newMessage.getFrom().getId(), true);
+                break;
             default:
                 /**
                  * isWaitingForNewCategory de @link UserStatus espera el monto de la transaccion

@@ -258,6 +258,18 @@ public class TelegramBotContent {
 
                         o si aun no lo quieres hacer, presiona /menu
                         """;
+        public static final String USER_MSG_25 = """
+                        🤖 
+                        
+                        😟 Disculpa. no tienes ese monto disponible en tus ahorros. 
+
+                        """;
+
+        public static final String USER_MSG_26 = """
+                        🤖
+                        
+                        😟 No tienes ese monto disponible, consulta tu saldo disponible en /balancegeneral, o
+                        """;
 
         public static String USER_REPORT_1(String ingresos, String egresos, String ahorros, String balance) {
                 return String.format("""
@@ -285,7 +297,7 @@ public class TelegramBotContent {
                         report.append("/ver");
                         report.append(parts[0]);
                         report.append(" ");
-                        String emoji = parts[3].equals("INGRESO") ? "⬆️" : "⬇️";
+                        String emoji = parts[3].equals("INGRESO") ? "🟢" : "🔴";
                         report.append(emoji).append(" ");
                         report.append(parts[1]);
                         report.append(" ");
@@ -406,6 +418,8 @@ public class TelegramBotContent {
                         🤖:
                         Mi programador es Miguel, un desarrollador frontend, con experiencia en web apps.
 
-                        Puedes ver su trabajo en su [portfolio](https://borgesmj.github.io/) o su perfil de [github](https://github.com/borgesmj19)
+                        Puedes ver su trabajo en su [portfolio](https://borgesmj.github.io/) y su perfil de [linkedin](https://www.linkedin.com/in/borgesmj/) o tambien su perfil de [github](https://github.com/borgesmj19)
+
+                        #openToWork
                         """;
 }

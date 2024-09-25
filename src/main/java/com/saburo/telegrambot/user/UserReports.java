@@ -118,14 +118,17 @@ public class UserReports {
             newReport += "📊 *Resumen general:*\n";
             String totalIncomeString = String.format("%.2f", totalIncome);
             double savings = databaseCommands.getSavingsCurrentMonth(userId, monthInt);
+            double savingsWithdraw = databaseCommands.getSavingsWithdrawCurrentMonth(userId, monthInt);
             String savingsString = String.format("%.2f", savings);
+            String savingsWithdrawString = String.format("%.2f", savingsWithdraw);
             newReport += "\n";
             // AHORROS MES ACTUAL
-            newReport += "🔒 *Ahorros este mes:* `" + savingsString + "`";
+            newReport += "🔒 *Ahorros ingresados este mes:* `" + savingsString + "`\n";
+            newReport += "🔒 *Ahorros retirados este mes:* `" + savingsWithdrawString + "`";
             // AHORROS TOTALES
             double totalSavings = databaseCommands.getTotalSavings(userId);
             double capitalInicial = databaseCommands.getCapitalInicial(userId);
-            double initialSavings = databaseCommands.getInitialSavings(userId);
+            double getSavingsFromMovimientos = databaseCommands.getAmmountsByTypeOfMovement(userId, "AHORROS");
             String totalSavingsString = String.format("%.2f", totalSavings);
             newReport += "\n";
             newReport += "💰 *Total ahorros:* `" + totalSavingsString + "`";
@@ -134,7 +137,7 @@ public class UserReports {
             newReport += "\n";
             String totalOutcomeString = String.format("%.2f", totalOutcome);
             newReport += "🔴 *Total Egresos:* `" + totalOutcomeString + "`";
-            balance = capitalInicial + totalIncome - totalOutcome - savings + initialSavings;
+            balance = capitalInicial + totalIncome - totalOutcome - getSavingsFromMovimientos;
             String balanceString = String.format("%.2f", balance);
             newReport += "\n";
             newReport += "⚖️ *Balance final:* `" + balanceString + "`";
@@ -147,16 +150,20 @@ public class UserReports {
 
     public String getProfile(String username, long userId){
         String profileString ="";
+        //Total de ingresos
         double totalIncome = databaseCommands.getAmmountsByTypeOfMovement(userId, "INGRESO");
+        // Total de egresos
         double totalOutcome = databaseCommands.getAmmountsByTypeOfMovement(userId, "EGRESO");
+        // Total de ahorros retirados del capital del usuario
         double totalSavings = databaseCommands.getAmmountsByTypeOfMovement(userId, "AHORROS");
-        double getSavingsWoutInitial = databaseCommands.getSavingsWoutInitial(userId);
+        // Total de ahorros que tiene el usuario
+        double totalSavingsAccount = databaseCommands.getTotalSavings(userId);
         int numberOfMovements = databaseCommands.getMovementsCount(userId);
-        double newBalance = totalIncome - totalOutcome - getSavingsWoutInitial;
+        double newBalance = totalIncome - totalOutcome - totalSavings;
         LocalDate lastDate = databaseCommands.getLastMovementDate(userId); // Cambiar a LocalDate si el método lo permite
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String lastDateString = lastDate.format(formatter);
-        profileString = TelegramBotContent.USER_PROFILE(username, newBalance, numberOfMovements, lastDateString, totalSavings);
+        profileString = TelegramBotContent.USER_PROFILE(username, newBalance, numberOfMovements, lastDateString, totalSavingsAccount);
         return profileString;
     }
 
