@@ -128,7 +128,8 @@ public class MessageHandler {
                 if (userStatus.getTypeOfMovement(newMessage.getFrom().getId()).equals("EGRESO")
                         && userProfile.getAmmount() > userProfile.getUserCapital()) {
                     messageSender.sendMessage(newMessage,
-                            "no tienes ese monto disponible, consulta tu saldo disponible en /balancegeneral");
+                            USER_MSG_26);
+                            messageSender.sendMessage(newMessage, USER_MSG_21);
                     return;
                 } else {
                     messageSender.sendMessage(newMessage, USER_MSG_15);
@@ -189,7 +190,8 @@ public class MessageHandler {
             userProfile.setAmmount(newMessage.getText());
             if (userProfile.getAmmount() > userProfile.getUserSavings()) {
                 messageSender.sendMessage(newMessage,
-                        "no tienes ese monto disponible en tus ahorros.");
+                        USER_MSG_25);
+                messageSender.sendMessage(newMessage, USER_MSG_21);
                 return;
             } else {
                 databaseCommands.savingsWithdraw(
