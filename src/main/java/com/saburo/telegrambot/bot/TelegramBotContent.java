@@ -285,7 +285,7 @@ public class TelegramBotContent {
                         report.append("/ver");
                         report.append(parts[0]);
                         report.append(" ");
-                        String emoji = parts[3].equals("INGRESO") ? "⬆️" : "⬇️";
+                        String emoji = parts[3].equals("INGRESO") ? "🟢" : "🔴";
                         report.append(emoji).append(" ");
                         report.append(parts[1]);
                         report.append(" ");
